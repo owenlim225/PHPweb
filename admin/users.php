@@ -18,19 +18,119 @@
 
 
 <body>
-<!-- Navbar -->
-<aside class="col-md-2 d-flex flex-column justify-content-between align-items-center bg-dark text-light text-center py-4 vh-100 position-fixed">
-    <div class="w-100 d-flex flex-column align-items-center gap-3">
-        <img src="../img/logo.png" alt="logo" class="img-fluid" style="max-width: 80px;">
-        <div class="d-flex flex-column gap-3 w-100">
-            <a href="../admin/dashboard.php" class="text-light text-decoration-none">Dashboard</a>
-            <a href="../admin/users.php" class="text-warning fw-bold fs-4 text-decoration-none">Users</a>
-            <a href="../admin/courses.php" class="text-light text-decoration-none">Courses</a>
-            <a href="../admin/order.php" class="text-light text-decoration-none">Orders</a>
+
+
+
+<main class="p-0">
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Navbar -->
+            <aside class="col-md-2 d-flex flex-column justify-content-between align-items-center bg-dark text-light text-center py-4 vh-100 position-fixed">
+                <div class="w-100 d-flex flex-column align-items-center gap-3">
+                    <img src="../img/logo.png" alt="logo" class="img-fluid" style="max-width: 80px;">
+                    <div class="d-flex flex-column gap-3 w-100">
+                        <a href="../admin/dashboard.php" class="text-light text-decoration-none">Dashboard</a>
+                        <a href="../admin/users.php" class="text-warning fw-bold fs-4 text-decoration-none">Users</a>
+                        <a href="../admin/courses.php" class="text-light text-decoration-none">Courses</a>
+                        <a href="../admin/order.php" class="text-light text-decoration-none">Orders</a>
+                    </div>
+                </div>
+                <a class="text-danger text-decoration-none fw-bold" href="../func/logout.php">Logout</a>
+            </aside>
+
+<!-- Main Content -->
+ 
+<div class="col-md-10 offset-md-2">
+    <div class="container py-4">
+        
+            <div class="row justify-content-center">
+                <div class="col-md-4 bg-white p-4 rounded shadow-lg mt-4 text-center" style="box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); transition: transform 0.3s ease;">
+                    <h2 class="mb-3 text-dark">Add New User</h2>
+                    
+                    <form action="add-user.php" method="POST">
+                        <div class="mb-3" style="display: flex; gap: 10px;">
+                            <input type="text" class="form-control border-0 border-bottom" name="first_name" required placeholder="First Name" style="flex: 1;">
+                            <input type="text" class="form-control border-0 border-bottom" name="last_name" required placeholder="Last Name" style="flex: 1;">
+                        </div>
+
+                        <div class="mb-3">
+                            <input type="email" name="email" class="form-control border-0 border-bottom" placeholder="Email" required>
+                        </div>
+                        <div class="mb-3">
+                            <input type="password" name="password" class="form-control border-0 border-bottom" placeholder="Password" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label text-dark">Account Type:</label>
+                            <select name="account_type" class="form-select border-0 border-bottom" required>
+                                <option value="1">Admin</option>
+                                <option value="2">User</option>
+                            </select>
+                        </div>
+                        <button type="submit" name="add_user" class="btn btn-dark w-100 fw-bold">➕ Add User</button>
+                    </form>
+                </div>
+            </div>
+
+
+
+
+        <!-- user list table -->
+        <h1 class="text-center fw-bold my-5 text-primary">Users List</h1>
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover table-bordered shadow rounded">
+                            <thead class="table-dark text-center">
+                                <tr>
+                                    <th scope="col">ID</th>
+                                    <th scope="col">First Name</th>
+                                    <th scope="col">Last Name</th>
+                                    <th scope="col">Email</th>
+                                    <th scope="col">Actions</th>
+                                </tr>
+                            </thead>
+
+                            <tbody class="text-center">
+                                <?php
+                                    // Fetch users
+                                    $sql = "SELECT * FROM users";
+                                    $result = $conn->query($sql);
+
+                                    if ($result->num_rows > 0) {
+                                        while ($row = $result->fetch_assoc()) {  
+                                    ?>
+                                            <tr>
+                                                <td class="fw-bold"><?php echo $row['user_id']; ?></td>
+                                                <td><?php echo $row['first_name']; ?></td>
+                                                <td><?php echo $row['last_name']; ?></td>
+                                                <td><?php echo $row['email']; ?></td>
+                                                <td>
+                                                    <a href="edit-users.php?id=<?php echo $row['user_id']; ?>&action=edit" class="btn btn-sm btn-outline-success">✏️ Edit</a>
+                                                    <a href="edit-users.php?id=<?php echo $row['user_id']; ?>&action=delete" class="btn btn-sm btn-outline-danger" 
+                                                    onclick="return confirm('Are you sure you want to delete this user?');">🗑 Delete</a>
+                                                </td>
+                                            </tr>
+                                    <?php
+                                        }
+                                    } else {
+                                        echo "<tr><td colspan='5' class='text-center text-muted'>No users found.</td></tr>";
+                                    }
+                                ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-    <a class="text-danger text-decoration-none fw-bold" href="../func/logout.php">Logout</a>
-</aside>
+</div>
+
+
+
+
+
+</main>
 
 
 
