@@ -106,21 +106,19 @@ include("../func/connections.php");
 
                                     if ($result->num_rows > 0) {
                                         while ($row = $result->fetch_assoc()) {  
-                                    ?>
-                                            <tr>
-                                                <td class="fw-bold"><?php echo $row['user_id']; ?></td>
-                                                <td><?php echo $row['first_name']; ?></td>
-                                                <td><?php echo $row['last_name']; ?></td>
-                                                <td><?php echo $row['email']; ?></td>
-                                                <td><?php echo ($row['is_admin'] == 1) ? 'Admin' : 'User'; ?></td>
+                                            echo "<tr>
+                                                <td class='fw-bold'>{$row['user_id']}</td>
+                                                <td>{$row['first_name']}</td>
+                                                <td>{$row['last_name']}</td>
+                                                <td>{$row['email']}</td>
+                                                <td>" . ($row['is_admin'] == 1 ? 'Admin' : 'User') . "</td>
                                                 <td>
-                                                    <a href="../func/edit-user.php" class="btn btn-sm btn-outline-success">✏️ Edit</a>
-                                                    <a href="../func/delete-user.php?user_id={$row['user_id']}" class="btn btn-sm btn-outline-danger" 
-                                                        onclick="return confirm('Are you sure you want to delete this user?');">🗑 Delete
+                                                    <a href='../func/edit-user.php?id={$row['user_id']}' class='btn btn-sm btn-outline-success'>✏️ Edit</a>
+                                                    <a href='../func/delete-user.php?id={$row['user_id']}' class='btn btn-sm btn-outline-danger' 
+                                                        onclick='return confirm('Are you sure you want to delete this user?');'>🗑 Delete
                                                     </a>
                                                 </td>
-                                            </tr>
-                                    <?php
+                                            </tr>";
                                         }
                                     } else {
                                         echo "<tr><td colspan='5' class='text-center text-muted'>No users found.</td></tr>";
