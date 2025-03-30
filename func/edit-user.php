@@ -7,7 +7,7 @@ $user = null; // Ensure $user is defined
 
 // Fetch user details securely
 if ($user_id > 0) {
-    $sql = "SELECT * FROM user WHERE user_id = ?";
+    $sql = "SELECT user_id, first_name, last_name, contact, email, is_admin FROM user WHERE user_id = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $user_id);
     $stmt->execute();
@@ -15,10 +15,12 @@ if ($user_id > 0) {
 
     if ($result->num_rows === 1) {
         $user = $result->fetch_assoc();
+        $user['is_admin'] = isset($user['is_admin']) ? $user['is_admin'] : 0; // Default to 0 if missing
     } else {
         header("Location: ../admin/users.php");
         exit();
     }
+    
 } else {
     header("Location: ../admin/users.php");
     exit();
@@ -32,7 +34,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["update_user"])) {
     $new_email = trim($_POST["email"]);
     $new_password = $_POST["password"];
     $confirm_password = $_POST["confirm_password"];
-    $admin = intval($_POST["admin"]); // Ensure integer
+    $is_admin = intval($_POST["is_admin"]); // Ensure integer
 
     // Validate required fields
     if (empty($first_name) || empty($last_name) || empty($contact) || empty($new_email)) {
@@ -55,8 +57,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["update_user"])) {
             $message = "<div class='error'>⚠️ Email is already taken.</div>";
         } else {
             // Prepare dynamic update query
-            $updates = "first_name=?, last_name=?, contact=?, email=?, admin=?";
-            $params = [$first_name, $last_name, $contact, $new_email, $admin];
+            $updates = "first_name=?, last_name=?, contact=?, email=?, is_admin=?";
+            $params = [$first_name, $last_name, $contact, $new_email, $is_admin];
             $types = "ssssi";
 
             if (!empty($new_password)) {
@@ -81,7 +83,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["update_user"])) {
                 $user['last_name'] = $last_name;
                 $user['contact'] = $contact;
                 $user['email'] = $new_email;
-                $user['admin'] = $admin;
+                $user['is_admin'] = $is_admin;
             } else {
                 $message = "<div class='error'>⚠️ Error updating user.</div>";
             }
@@ -161,9 +163,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["update_user"])) {
 
                                 <div class="mb-3">
                                     <label class="form-label text-dark">Account Type:</label>
-                                    <select name="admin" class="form-select border-0 border-bottom">
-                                        <option value="1" <?php echo ($user['admin'] == 1) ? 'selected' : ''; ?>>Admin</option>
-                                        <option value="0" <?php echo ($user['admin'] == 0) ? 'selected' : ''; ?>>User</option>
+                                    <select name="is_admin" class="form-select border-0 border-bottom">
+                                        <option value="1" <?php echo ($user['is_admin'] == 1) ? 'selected' : ''; ?>>Admin</option>
+                                        <option value="0" <?php echo ($user['is_admin'] == 0) ? 'selected' : ''; ?>>User</option>
                                     </select>
                                 </div>
 
