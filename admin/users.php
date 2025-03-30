@@ -1,3 +1,9 @@
+<?php
+
+include("../func/connections.php");
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -87,6 +93,7 @@
                                     <th scope="col">First Name</th>
                                     <th scope="col">Last Name</th>
                                     <th scope="col">Email</th>
+                                    <th scope="col">Account Type</th>
                                     <th scope="col">Actions</th>
                                 </tr>
                             </thead>
@@ -94,7 +101,7 @@
                             <tbody class="text-center">
                                 <?php
                                     // Fetch users
-                                    $sql = "SELECT * FROM users";
+                                    $sql = "SELECT * FROM user";
                                     $result = $conn->query($sql);
 
                                     if ($result->num_rows > 0) {
@@ -105,10 +112,12 @@
                                                 <td><?php echo $row['first_name']; ?></td>
                                                 <td><?php echo $row['last_name']; ?></td>
                                                 <td><?php echo $row['email']; ?></td>
+                                                <td><?php echo ($row['is_admin'] == 1) ? 'Admin' : 'User'; ?></td>
                                                 <td>
-                                                    <a href="edit-users.php?id=<?php echo $row['user_id']; ?>&action=edit" class="btn btn-sm btn-outline-success">✏️ Edit</a>
-                                                    <a href="edit-users.php?id=<?php echo $row['user_id']; ?>&action=delete" class="btn btn-sm btn-outline-danger" 
-                                                    onclick="return confirm('Are you sure you want to delete this user?');">🗑 Delete</a>
+                                                    <a href="../func/edit-user.php" class="btn btn-sm btn-outline-success">✏️ Edit</a>
+                                                    <a href="../func/delete-user.php?user_id={$row['user_id']}" class="btn btn-sm btn-outline-danger" 
+                                                        onclick="return confirm('Are you sure you want to delete this user?');">🗑 Delete
+                                                    </a>
                                                 </td>
                                             </tr>
                                     <?php
