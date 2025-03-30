@@ -48,34 +48,51 @@ include("../func/connections.php");
  
 <div class="col-md-10 offset-md-2">
     <div class="container py-4">
-        
-            <div class="row justify-content-center">
-                <div class="col-md-4 bg-white p-4 rounded shadow-lg mt-4 text-center" style="box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); transition: transform 0.3s ease;">
-                    <h2 class="mb-3 text-dark">Add New User</h2>
-                    
-                    <form action="add-user.php" method="POST">
-                        <div class="mb-3" style="display: flex; gap: 10px;">
-                            <input type="text" class="form-control border-0 border-bottom" name="first_name" required placeholder="First Name" style="flex: 1;">
-                            <input type="text" class="form-control border-0 border-bottom" name="last_name" required placeholder="Last Name" style="flex: 1;">
-                        </div>
 
-                        <div class="mb-3">
-                            <input type="email" name="email" class="form-control border-0 border-bottom" placeholder="Email" required>
-                        </div>
-                        <div class="mb-3">
-                            <input type="password" name="password" class="form-control border-0 border-bottom" placeholder="Password" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label text-dark">Account Type:</label>
-                            <select name="account_type" class="form-select border-0 border-bottom" required>
-                                <option value="1">Admin</option>
-                                <option value="2">User</option>
-                            </select>
-                        </div>
-                        <button type="submit" name="add_user" class="btn btn-dark w-100 fw-bold">➕ Add User</button>
-                    </form>
-                </div>
+        <!-- add user -->
+        <div class="row justify-content-center">
+            <div class="col-md-4 bg-white p-4 rounded shadow-lg mt-4 text-center" style="box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); transition: transform 0.3s ease;">
+                <h2 class="mb-3 text-dark">Add New User</h2>
+                
+                <form action="add-user.php" method="POST">
+                    <!-- name -->
+                    <div class="mb-3" style="display: flex; gap: 10px;">
+                        <input type="text" class="form-control border-0 border-bottom" name="first_name" required placeholder="First Name" style="flex: 1;">
+                        <input type="text" class="form-control border-0 border-bottom" name="last_name" required placeholder="Last Name" style="flex: 1;">
+                    </div>
+
+                    <!-- contact -->
+                    <div class="mb-3">
+                        <input type="text" name="contact" class="form-control border-0 border-bottom" required placeholder="Contact Number">
+                    </div>
+
+                    <!-- email -->
+                    <div class="mb-3">
+                        <input type="email" name="email" class="form-control border-0 border-bottom" placeholder="Email" required >
+                    </div>
+
+                    <!-- password -->
+                    <div class="mb-3">
+                        <input type="password" name="password" class="form-control border-0 border-bottom" placeholder="Password" required>
+                    </div>
+
+                    <!-- confirm password -->
+                    <div class="mb-3">
+                        <input type="password" name="confirm_password" class="form-control border-0 border-bottom" placeholder="Retype Password" required>
+                    </div>
+
+                    <!-- account type -->
+                    <div class="mb-3">
+                        <label class="form-label text-dark">Account Type:</label>
+                        <select name="account_type" class="form-select border-0 border-bottom" required>
+                            <option value="1">Admin</option>
+                            <option value="2">User</option>
+                        </select>
+                    </div>
+                    <button type="submit" name="add_user" class="btn btn-dark w-100 fw-bold">➕ Add User</button>
+                </form>
             </div>
+        </div>
 
 
 
@@ -113,8 +130,8 @@ include("../func/connections.php");
                                                 <td>{$row['email']}</td>
                                                 <td>" . ($row['is_admin'] == 1 ? 'Admin' : 'User') . "</td>
                                                 <td>
-                                                    <a href='../func/edit-user.php?id={$row['user_id']}' class='btn btn-sm btn-outline-success'>✏️ Edit</a>
-                                                    <a href='../func/delete-user.php?id={$row['user_id']}' class='btn btn-sm btn-outline-danger' 
+                                                    <a href='../func/edit-user.php?user_id={$row['user_id']}' class='btn btn-sm btn-outline-success'>✏️ Edit</a>
+                                                    <a href='../func/delete-user.php?user_id={$row['user_id']}' class='btn btn-sm btn-outline-danger' 
                                                         onclick='return confirm('Are you sure you want to delete this user?');'>🗑 Delete
                                                     </a>
                                                 </td>
@@ -132,11 +149,6 @@ include("../func/connections.php");
         </div>
     </div>
 </div>
-
-
-
-
-
 </main>
 
 

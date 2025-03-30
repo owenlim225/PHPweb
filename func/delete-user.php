@@ -2,8 +2,8 @@
 include("connections.php");
 
 // delete user
-if (isset($_GET["id"]) && is_numeric($_GET["id"])) {
-    $user_id = intval($_GET["id"]);
+if (isset($_GET["user_id"]) && is_numeric($_GET["user_id"])) {
+    $user_id = intval($_GET["user_id"]);
 
     $delete = mysqli_query($conn, "DELETE FROM user WHERE user_id = '$user_id'");
 
