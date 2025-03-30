@@ -3,7 +3,7 @@
 include("../func/connections.php");
 
 
-// Handle User Insert
+// Handle Course Insert
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["add_course"])) {
     $course_id = trim($_POST["course_id"]);
     $course_title = trim($_POST["course_title"]);

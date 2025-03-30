@@ -1,8 +1,56 @@
 <?php
-
+session_start();
 include("../func/connections.php");
 
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["add_user"])) {
+    $first_name = trim($_POST["first_name"]);
+    $last_name = trim($_POST["last_name"]);
+    $contact = trim($_POST["contact"]);
+    $email = trim($_POST["email"]);
+    $password = $_POST["password"];
+    $confirm_password = $_POST["confirm_password"];
+    $is_admin = intval($_POST["account_type"]); 
+
+    // Validate fields
+    if (empty($first_name) || empty($last_name) || empty($contact) || empty($email)) {
+        $_SESSION['message'] = "<div class='error'>⚠️ All fields are required except password.</div>";
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $_SESSION['message'] = "<div class='error'>⚠️ Invalid email format.</div>";
+    } elseif (!empty($password) && (strlen($password) < 6 || $password !== $confirm_password)) {
+        $_SESSION['message'] = "<div class='error'>⚠️ Password must be at least 6 characters and match.</div>";
+    } else {
+        // Hash password if provided
+        $hashed_password = !empty($password) ? password_hash($password, PASSWORD_DEFAULT) : null;
+
+        // Check if email already exists
+        $check_sql = "SELECT * FROM user WHERE email = ?";
+        $stmt = $conn->prepare($check_sql);
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows > 0) {
+            $_SESSION['message'] = "<div class='error'>⚠️ Email already exists.</div>";
+        } else {
+            // Insert user into database
+            $sql = "INSERT INTO user (first_name, last_name, contact, email, password, is_admin) 
+                    VALUES (?, ?, ?, ?, ?, ?)";
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param("sssssi", $first_name, $last_name, $contact, $email, $hashed_password, $is_admin);
+
+            if ($stmt->execute()) {
+                $_SESSION['message'] = "<div class='success'>✅ User added successfully!</div>";
+                
+            } else {
+                $_SESSION['message'] = "<div class='error'>⚠️ Error adding user: " . $conn->error . "</div>";
+            }
+        }
+    }
+    header("Location: users.php");
+    exit();
+}
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -50,7 +98,7 @@ include("../func/connections.php");
                 <div class="col-md-4 bg-white p-4 rounded shadow-lg mt-4 text-center" style="box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); transition: transform 0.3s ease;">
                     <h2 class="mb-3 text-dark">Add New User</h2>
                     
-                    <form action="add-user.php" method="POST">
+                    <form action="users.php" method="POST">
                         <!-- name -->
                         <div class="mb-3" style="display: flex; gap: 10px;">
                             <input type="text" class="form-control border-0 border-bottom" name="first_name" required placeholder="First Name" style="flex: 1;">

@@ -85,7 +85,7 @@ $total_courses = $course_result->fetch_assoc()['total_courses'];
 
 
                 <h1 class="text-center fw-bold my-5 text-primary">Users List</h1>
-
+                <!-- Users Table -->
                 <div class="container">
                     <div class="row justify-content-center">
                         <div class="col-lg-10">
@@ -123,6 +123,40 @@ $total_courses = $course_result->fetch_assoc()['total_courses'];
                                         ?>
                                     </tbody>
                                 </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Course List -->
+                <h1 class="text-center fw-bold my-5 text-primary">Course List</h1>
+                <div class="container">
+                    <div class="row justify-content-center">
+                        <div class="col-lg-10">
+                            <div class="row">
+                                <?php
+                                    // Fetch courses
+                                    $sql = "SELECT * FROM courses";
+                                    $result = $conn->query($sql);
+
+                                    if ($result->num_rows > 0) {
+                                        while ($row = $result->fetch_assoc()) {  
+                                            echo "<div class='col-md-4 mb-4'>
+                                                    <div class='card shadow-lg' style='width: 100%; height: 100%;'>
+                                                        <img src='../img/courses/{$row['image']}' alt='{$row['course_title']}' class='card-img-top' style='height: 200px; object-fit: cover;'>
+                                                        <div class='card-body text-center'>
+                                                            <h5 class='card-title'>{$row['course_title']}</h5>
+                                                            <p class='card-text text-muted fw-bold' style='font-size: 12px;'>{$row['instructor']}</p>
+                                                            <p class='card-text text-muted' style='font-size: 16px;'>{$row['description']}</p>
+                                                            <p class='card-text fw-bold'>₱" . number_format($row['price'], 2) . "</p>
+                                                        </div>
+                                                    </div>
+                                                </div>";
+                                        }
+                                    } else {
+                                        echo "<p class='text-center text-muted'>No courses found.</p>";
+                                    }
+                                ?>
                             </div>
                         </div>
                     </div>
