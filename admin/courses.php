@@ -2,10 +2,53 @@
 
 include("../func/connections.php");
 
-// Fetch all products
-$product_query = "SELECT * FROM courses ORDER BY course_id ASC";
-$product_result = $conn->query($product_query);
 
+// Handle User Insert
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["add_course"])) {
+    $course_id = trim($_POST["course_id"]);
+    $course_title = trim($_POST["course_title"]);
+    $description = trim($_POST["description"]);
+    $instructor = trim($_POST["instructor"]);
+    $price = trim($_POST["price"]);
+    $image = trim($_POST["image"]);
+
+    // Handle File Upload
+    if (isset($_FILES['image']) && $_FILES['image']['error'] == 0) {
+        $image_name = basename($_FILES['image']['name']);
+        $image_target = "../img/courses/" . $image_name;
+        
+        if (move_uploaded_file($_FILES['image']['tmp_name'], $image_target)) {
+            // Check for duplicate course ID
+            $check_sql = "SELECT * FROM courses WHERE course_id = ?";
+            $stmt = $conn->prepare($check_sql);
+            $stmt->bind_param("s", $course_id);
+            $stmt->execute();
+            $result = $stmt->get_result();
+
+            if ($result->num_rows > 0) {
+                $_SESSION['message'] = "<div id='message-box' class='error'>⚠️ Course ID already exists.</div>";
+            } else {
+                // Insert course into database
+                $sql = "INSERT INTO courses (course_id, course_title, description, instructor, price, image) 
+                        VALUES (?, ?, ?, ?, ?, ?)";
+                $stmt = $conn->prepare($sql);
+                $stmt->bind_param("sssdss", $course_id, $course_title, $description, $instructor, $price, $image_name);
+
+                if ($stmt->execute()) {
+                    $_SESSION['message'] = "<div id='message-box' class='success'>✅ Course added successfully!</div>";
+                } else {
+                    $_SESSION['message'] = "<div id='message-box' class='error'>⚠️ Error adding course.</div>";
+                }
+            }
+        } else {
+            $_SESSION['message'] = "<div id='message-box' class='error'>⚠️ Error uploading image.</div>";
+        }
+    } else {
+        $_SESSION['message'] = "<div id='message-box' class='error'>⚠️ Image is required.</div>";
+    }
+    header("Location: courses.php");
+    exit();
+}
 ?>
 
 <!DOCTYPE html>
@@ -37,8 +80,8 @@ $product_result = $conn->query($product_query);
                     <img src="../img/logo.png" alt="logo" class="img-fluid" style="max-width: 80px;">
                     <div class="d-flex flex-column gap-3 w-100">
                         <a href="../admin/dashboard.php" class="text-light text-decoration-none">Dashboard</a>
-                        <a href="../admin/users.php" class="text-warning fw-bold fs-4 text-decoration-none">Users</a>
-                        <a href="../admin/courses.php" class="text-light text-decoration-none">Courses</a>
+                        <a href="../admin/users.php" class="text-light text-decoration-none">Users</a>
+                        <a href="../admin/courses.php" class="text-warning fw-bold fs-4 text-decoration-none">Courses</a>
                         <a href="../admin/order.php" class="text-light text-decoration-none">Orders</a>
                     </div>
                 </div>
@@ -55,7 +98,7 @@ $product_result = $conn->query($product_query);
                     style="box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); transition: transform 0.3s ease;">
                     <h2 class="mb-3 text-dark">Add New Course</h2>
                     
-                    <form action="add-course.php" method="POST" enctype="multipart/form-data">
+                    <form action="courses.php" method="POST" enctype="multipart/form-data">
                         <div class="mb-3">
                             <input type="text" name="course_title" class="form-control border-0 border-bottom" required placeholder="Course Title">
                         </div>
@@ -93,7 +136,8 @@ $product_result = $conn->query($product_query);
                                                 <div class='card shadow-lg' style='width: 100%; height: 100%;'>
                                                     <img src='../img/courses/{$row['image']}' alt='{$row['course_title']}' class='card-img-top' style='height: 200px; object-fit: cover;'>
                                                     <div class='card-body text-center'>
-                                                        <h4 class='card-title'>{$row['course_title']}</h4>
+                                                        <h5 class='card-title'>{$row['course_title']}</h5>
+                                                        <p class='card-text text-muted fw-bold' style='font-size: 12px;'>{$row['instructor']}</p>
                                                         <p class='card-text text-muted' style='font-size: 16px;'>{$row['description']}</p>
                                                         <p class='card-text fw-bold'>₱" . number_format($row['price'], 2) . "</p>
                                                         <a href='../func/edit-course.php?course_id={$row['course_id']}' class='btn btn-sm btn-outline-success'>✏️ Edit</a>
