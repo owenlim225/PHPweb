@@ -1,3 +1,17 @@
+.text-huge-title {
+    --text-huge : 10.8rem;
+    font-size   : var(--text-huge);
+    line-height : 1.0740;
+    margin-top  : 0;
+}
+
+.body-color {
+    background-color: #0e0f0f;
+    color: #fff;
+    margin: 0;
+    font-family: "Helvetica Neue", Arial, sans-serif;
+  }
+
 .fa-custom-logo {
     width: 64px;  /* Match small FA icons */
     height: auto; /* Keep proportion */
@@ -90,4 +104,61 @@
 /* ----------------------------------------------------------------------------------------------------- */
 
 
+.top-section {
+    background-color: #f8f9fa;
+    padding: 50px 0;
+    text-align: center;
+}
+.logo {
+    max-height: 50px;
+}
+.header_logo_text {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+.btn-custom {
+    background-color: #ff6f61;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+}
+.btn-custom:hover {
+    background-color: #ff4a3c;
+    color: white;
+}
 
+
+/* ----------------------------------------------------------------------------------------------------- */
+
+:root {
+    --default-font: "Roboto",  system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    --heading-font: "Raleway",  sans-serif;
+    --nav-font: "Poppins",  sans-serif;
+  }
+
+/* Hero section */
+.hero {
+    min-height: 32vh; /* Fill the screen vertically */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero h1 {
+    font-size: 8rem;
+    font-weight: 700;
+    line-height: 1.2;
+    font-family: 'DM Serif Display', serif; 
+    font-size: 8rem; 
+    font-weight: 700; 
+    line-height: 1.2;
+}
+
+  @media (min-width: 768px) {
+    .hero h1 {
+      font-size: 4rem;
+    }
+  }

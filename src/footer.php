@@ -18,13 +18,20 @@
         </a>
 
         <!-- Social Media Links -->
-        <div class="d-flex justify-content-center gap-3">
-            <a href="#" class="text-light"><i class="fa-solid fa-fire fa-lg"></i></a>
-            <a href="#" class="text-light"><i class="fab fa-twitter fa-lg"></i></a>
-            <a href="#" class="text-light"><i class="fab fa-instagram fa-lg"></i></a>
-            <a href="#" class="text-light"><i class="fab fa-linkedin fa-lg"></i></a>
-            <a href="#" class="text-light"><i class="fab fa-youtube fa-lg"></i></a>
-            <a href="#" class="text-light"><i class="fab fa-tiktok fa-lg"></i></a>
+        <div class="d-flex justify-content-center gap-3 mt-3">
+            <a href="#" class="d-flex justify-content-center align-items-center rounded-circle bg-light text-dark fs-4" style="width: 50px; height: 50px;">
+                <i class="bi bi-twitter-x"></i>
+            </a>
+            <a href="#" class="d-flex justify-content-center align-items-center rounded-circle bg-light text-dark fs-4" style="width: 50px; height: 50px;">
+                <i class="bi bi-facebook"></i>
+            </a>
+            <a href="#" class="d-flex justify-content-center align-items-center rounded-circle bg-light text-dark fs-4" style="width: 50px; height: 50px;">
+                <i class="bi bi-instagram"></i>
+            </a>
+            <a href="#" class="d-flex justify-content-center align-items-center rounded-circle bg-light text-dark fs-4" style="width: 50px; height: 50px;">
+                <i class="bi bi-linkedin"></i>
+            </a>
         </div>
     </div>
 </footer>
+
