@@ -1,3 +1,8 @@
+<?php
+include("func/connections.php");
+?>
+
+
 <!doctype html>
 <html lang="en">
   <head>
@@ -144,33 +149,40 @@
   <div class="container">
 
     <div class="row gy-4">
-      
-      <!-- Courses list -->
-      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
-          <div class="service-item position-relative">
-              <div class="mb-3">
-                  <img src="img/courses/course-2.png" alt="Icon" class="img-fluid rounded" style="width: 100%; height: 200px; object-fit: cover;">
-              </div>
+      <?php
+        // Fetch courses
+        $sql = "SELECT * FROM courses";
+        $result = $conn->query($sql);
+        
+        if ($result->num_rows > 0) {
+          while ($row = $result->fetch_assoc()) {  
+            echo "<div class='col-lg-4 col-md-6' data-aos='fade-up' data-aos-delay='100'>
+                  <div class='service-item position-relative'>
+                      <div class='mb-3'>
+                          <img src='img/courses/{$row['image']}' alt='{$row['course_title']}' class='img-fluid rounded' style='width: 100%; height: 200px; object-fit: cover;'>
+                      </div>
 
-              <div class="card-body text-center">
-                  <h5 class="card-title fw-bold">Leadership & Team Management for Creative Projects</h5>
-                  <p class="card-text text-muted fw-bold m-2" style="font-size: 12px;">Sherwin Limosnero</p>
-                  <p class="card-text text-muted m-2" style="font-size: 16px;">
-                      Develop leadership skills tailored for creative industries. Learn how to inspire teams, manage conflicts, delegate tasks, and foster a productive work environment.
-                  </p>
-                  <p class="card-text fw-bold" style="font-size: 18px;">₱10,000.00</p>
+                      <div class='card-body text-center'>
+                          <h5 class='card-title fw-bold'>{$row['course_title']}</h5>
+                          <p class='card-text text-muted fw-bold m-2' style='font-size: 12px;'>{$row['instructor']}</p>
+                          <p class='card-text text-muted m-2' style='font-size: 16px;'>
+                              {$row['description']}
+                          </p>
+                          <p class='card-text fw-bold' style='font-size: 18px;'>₱" . number_format($row['price'], 2) . "</p>
 
-                  <div class="m-4">
-                    <a href="#" class="btn btn-sm btn-success">Buy</a>
-                    <a href="#" class="btn btn-sm btn-outline-danger"><i class="fa-solid fa-cart-shopping"></i></a>
+                          <div class='m-4'>
+                            <a href='#' class='btn btn-sm btn-success'>Buy</a>
+                            <a href='#' class='btn btn-sm btn-outline-danger'><i class='fa-solid fa-cart-shopping'></i></a>
+                          </div>
+                      </div>
                   </div>
-              </div>
-          </div>
-      </div>
-
-
+              </div>";
+            }
+        } else {
+            echo "<p class='text-center text-muted'>No courses found.</p>";
+        }
+      ?>
     </div>
-
   </div>
 
 </section><!-- /Services Section -->
