@@ -19,7 +19,6 @@
 
     <!-- Vendor CSS Files -->
     <link href="src/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
-    
   </head>
 <body>
     
@@ -31,186 +30,144 @@
 <main class="main">
 
 <!-- Hero Section -->
-<section id="hero" class="hero section dark-background">
+<section id="home" class="hero section dark-background">
 
   <img src="img/hero-img.jpg" alt="hero-bg" data-aos="fade-in">
 
   <div class="container d-flex flex-column align-items-center justify-content-center text-center" data-aos="fade-up" data-aos-delay="100">
-    <h2>I am Morgan Freeman</h2>
-    <p><span class="typed" data-typed-items="Designer, Developer, Freelancer, Photographer"></span></p>
+    <h2>I am Sherwin Limosnero</h2>
+    <p><span class="fs-5 text-warning fst-italic">Designer, Developer, Freelancer, Musician</span></p>
   </div>
 
 </section><!-- /Hero Section -->
 
 <!-- About Section -->
-<section id="about" class="about section">
-
+<section id="about-me" class="about section">
   <div class="container" data-aos="fade-up" data-aos-delay="100">
+      <div class="row gy-4 align-items-center">
+        <!-- Left Column: Image -->
+        <div class="col-md-4">
+            <img src="img/face.png" style="width: 80%; height: auto;" class="img-fluid align-items-center" alt="Profile Picture">
+        </div>       
 
-    <div class="row gy-4">
-      <div class="col-md-6">
+        <!-- Right Column: About Me -->
+        <div class="col-md-8">
+          <div class="about-me">
+                <h4>About Me</h4>
+                <p>
+                    Hey there! I'm Sherwin Limosnero, a second-year Game Development student fueled by creativity and a passion for making fun, immersive experiences. 
+                </p>
 
-        <div class="row justify-content-between gy-4">
-          <div class="col-lg-5">
-            <img src="img/face.png" class="img-fluid" alt="">
-          </div>
-          <div class="col-lg-7 about-info">
-            <p><strong>Name: </strong> <span>Morgan Freeman</span></p>
-            <p><strong>Profile: </strong> <span>full stack developer</span></p>
-            <p><strong>Email: </strong> <span>contact@example.com</span></p>
-            <p><strong>Phone: </strong> <span>(617) 557-0089</span></p>
-          </div>
+                <div class="skills-content skills-animation">
+                    <h5>Skills</h5>
+                    <div class="d-flex flex-wrap gap-2">
+                <!-- Programming Languages -->
+                <div class="d-flex align-items-center gap-2 border rounded px-2 py-1 text-muted font-monospace hover-bg-light">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/csharp/csharp-original.svg" width="20" height="20" class="rounded" alt="C#" />
+                    <span>C#</span>
+                </div>
+                <div class="d-flex align-items-center gap-2 border rounded px-2 py-1 text-muted font-monospace hover-bg-light">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" width="20" height="20" class="rounded" alt="Python" />
+                    <span>Python</span>
+                </div>
+
+                <!-- Game Development -->
+                <div class="d-flex align-items-center gap-2 border rounded px-2 py-1 text-muted font-monospace hover-bg-light">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/6/6a/Godot_icon.svg" width="20" height="20" class="rounded" alt="Godot" />
+                    <span>Godot</span>
+                </div>
+                <div class="d-flex align-items-center gap-2 border rounded px-2 py-1 text-muted font-monospace hover-bg-light">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/unity/unity-original.svg" width="20" height="20" class="rounded" alt="Unity" />
+                    <span>Unity</span>
+                </div>
+
+                <!-- Frontend Development -->
+                <div class="d-flex align-items-center gap-2 border rounded px-2 py-1 text-muted font-monospace hover-bg-light">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg" width="20" height="20" class="rounded" alt="HTML5" />
+                    <span>HTML5</span>
+                </div>
+                <div class="d-flex align-items-center gap-2 border rounded px-2 py-1 text-muted font-monospace hover-bg-light">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg" width="20" height="20" class="rounded" alt="CSS3" />
+                    <span>CSS3</span>
+                </div>
+                <div class="d-flex align-items-center gap-2 border rounded px-2 py-1 text-muted font-monospace hover-bg-light">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/d/d5/Tailwind_CSS_Logo.svg" width="20" height="20" class="rounded" alt="Tailwind CSS" />
+                    <span>Tailwind CSS</span>
+                </div>
+                <div class="d-flex align-items-center gap-2 border rounded px-2 py-1 text-muted font-monospace hover-bg-light">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/bootstrap/bootstrap-original.svg" width="20" height="20" class="rounded" alt="Bootstrap" />
+                    <span>Bootstrap</span>
+                </div>
+                <div class="d-flex align-items-center gap-2 border rounded px-2 py-1 text-muted font-monospace hover-bg-light">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg" width="20" height="20" class="rounded" alt="React" />
+                    <span>React</span>
+                </div>
+
+                <!-- Version Control -->
+                <div class="d-flex align-items-center gap-2 border rounded px-2 py-1 text-muted font-monospace hover-bg-light">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg" width="20" height="20" class="rounded" alt="Git" />
+                    <span>Git</span>
+                </div>
+                <div class="d-flex align-items-center gap-2 border rounded px-2 py-1 text-muted font-monospace hover-bg-light">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg" width="20" height="20" class="rounded" alt="GitHub" />
+                    <span>GitHub</span>
+                </div>
+
+                <!-- Tools -->
+                <div class="d-flex align-items-center gap-2 border rounded px-2 py-1 text-muted font-monospace hover-bg-light">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vscode/vscode-original.svg" width="20" height="20" class="rounded" alt="VS Code" />
+                    <span>VS Code</span>
+                </div>
+                <div class="d-flex align-items-center gap-2 border rounded px-2 py-1 text-muted font-monospace hover-bg-light">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/figma/figma-original.svg" width="20" height="20" class="rounded" alt="Figma" />
+                    <span>Figma</span>
+                </div>
+            </div>
         </div>
 
-        <div class="skills-content skills-animation">
-
-          <h5>Skills</h5>
-
-          <div class="progress">
-            <span class="skill"><span>HTML</span> <i class="val">100%</i></span>
-            <div class="progress-bar-wrap">
-              <div class="progress-bar" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
-            </div>
-          </div><!-- End Skills Item -->
-
-          <div class="progress">
-            <span class="skill"><span>CSS</span> <i class="val">90%</i></span>
-            <div class="progress-bar-wrap">
-              <div class="progress-bar" role="progressbar" aria-valuenow="90" aria-valuemin="0" aria-valuemax="100"></div>
-            </div>
-          </div><!-- End Skills Item -->
-
-          <div class="progress">
-            <span class="skill"><span>JavaScript</span> <i class="val">75%</i></span>
-            <div class="progress-bar-wrap">
-              <div class="progress-bar" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
-            </div>
-          </div><!-- End Skills Item -->
-
-          <div class="progress">
-            <span class="skill"><span>Photoshop</span> <i class="val">55%</i></span>
-            <div class="progress-bar-wrap">
-              <div class="progress-bar" role="progressbar" aria-valuenow="55" aria-valuemin="0" aria-valuemax="100"></div>
-            </div>
-          </div><!-- End Skills Item -->
-
+          </div>
         </div>
       </div>
-
-      <div class="col-md-6">
-        <div class="about-me">
-          <h4>About me</h4>
-          <p>
-            Curabitur non nulla sit amet nisl tempus convallis quis ac lectus. Curabitur arcu erat, accumsan id
-            imperdiet et, porttitor
-            at sem. Praesent sapien massa, convallis a pellentesque nec, egestas non nisi. Nulla
-            porttitor accumsan tincidunt.
-          </p>
-          <p>
-            Mauris blandit aliquet elit, eget tincidunt nibh pulvinar a. Vivamus suscipit tortor eget felis
-            porttitor volutpat. Vestibulum
-            ac diam sit amet quam vehicula elementum sed sit amet dui. porttitor at sem.
-          </p>
-          <p>
-            Nulla porttitor accumsan tincidunt. Quisque velit nisi, pretium ut lacinia in, elementum id enim.
-            Nulla porttitor accumsan
-            tincidunt. Mauris blandit aliquet elit, eget tincidunt nibh pulvinar a.
-          </p>
-        </div>
-      </div>
-    </div>
 
   </div>
+</section>
 
-</section><!-- /About Section -->
-
-<!-- Services Section -->
-<section id="services" class="services section">
+<!-- courses Section -->
+<section id="courses" class="services section">
 
   <!-- Section Title -->
   <div class="container section-title" data-aos="fade-up">
-    <h2>Services</h2>
-    <p>Necessitatibus eius consequatur ex aliquid fuga eum quidem sint consectetur velit</p>
+    <h2>Courses</h2>
+    <p>Explore our wide range of courses designed to enhance your skills and knowledge in various domains.</p>
   </div><!-- End Section Title -->
 
   <div class="container">
 
     <div class="row gy-4">
-
+      
+      <!-- Courses list -->
       <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
-        <div class="service-item  position-relative">
-          <div class="icon">
-            <i class="bi bi-activity"></i>
-          </div>
-          <a href="#" class="stretched-link">
-            <h3>Nesciunt Mete</h3>
-          </a>
-          <p>Provident nihil minus qui consequatur non omnis maiores. Eos accusantium minus dolores iure perferendis tempore et consequatur.</p>
-        </div>
-      </div><!-- End Service Item -->
+          <div class="service-item position-relative">
+              <div class="mb-3">
+                  <img src="img/courses/course-2.png" alt="Icon" class="img-fluid rounded" style="width: 100%; height: 200px; object-fit: cover;">
+              </div>
 
-      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
-        <div class="service-item position-relative">
-          <div class="icon">
-            <i class="bi bi-broadcast"></i>
-          </div>
-          <a href="#" class="stretched-link">
-            <h3>Eosle Commodi</h3>
-          </a>
-          <p>Ut autem aut autem non a. Sint sint sit facilis nam iusto sint. Libero corrupti neque eum hic non ut nesciunt dolorem.</p>
-        </div>
-      </div><!-- End Service Item -->
+              <div class="card-body text-center">
+                  <h5 class="card-title fw-bold">Leadership & Team Management for Creative Projects</h5>
+                  <p class="card-text text-muted fw-bold m-2" style="font-size: 12px;">Sherwin Limosnero</p>
+                  <p class="card-text text-muted m-2" style="font-size: 16px;">
+                      Develop leadership skills tailored for creative industries. Learn how to inspire teams, manage conflicts, delegate tasks, and foster a productive work environment.
+                  </p>
+                  <p class="card-text fw-bold" style="font-size: 18px;">₱10,000.00</p>
 
-      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
-        <div class="service-item position-relative">
-          <div class="icon">
-            <i class="bi bi-easel"></i>
+                  <div class="m-4">
+                    <a href="#" class="btn btn-sm btn-success">Buy</a>
+                    <a href="#" class="btn btn-sm btn-outline-danger"><i class="fa-solid fa-cart-shopping"></i></a>
+                  </div>
+              </div>
           </div>
-          <a href="#" class="stretched-link">
-            <h3>Ledo Markt</h3>
-          </a>
-          <p>Ut excepturi voluptatem nisi sed. Quidem fuga consequatur. Minus ea aut. Vel qui id voluptas adipisci eos earum corrupti.</p>
-        </div>
-      </div><!-- End Service Item -->
+      </div>
 
-      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="400">
-        <div class="service-item position-relative">
-          <div class="icon">
-            <i class="bi bi-bounding-box-circles"></i>
-          </div>
-          <a href="#" class="stretched-link">
-            <h3>Asperiores Commodit</h3>
-          </a>
-          <p>Non et temporibus minus omnis sed dolor esse consequatur. Cupiditate sed error ea fuga sit provident adipisci neque.</p>
-          <a href="#" class="stretched-link"></a>
-        </div>
-      </div><!-- End Service Item -->
-
-      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="500">
-        <div class="service-item position-relative">
-          <div class="icon">
-            <i class="bi bi-calendar4-week"></i>
-          </div>
-          <a href="#" class="stretched-link">
-            <h3>Velit Doloremque</h3>
-          </a>
-          <p>Cumque et suscipit saepe. Est maiores autem enim facilis ut aut ipsam corporis aut. Sed animi at autem alias eius labore.</p>
-          <a href="#" class="stretched-link"></a>
-        </div>
-      </div><!-- End Service Item -->
-
-      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="600">
-        <div class="service-item position-relative">
-          <div class="icon">
-            <i class="bi bi-chat-square-text"></i>
-          </div>
-          <a href="#" class="stretched-link">
-            <h3>Dolori Architecto</h3>
-          </a>
-          <p>Hic molestias ea quibusdam eos. Fugiat enim doloremque aut neque non et debitis iure. Corrupti recusandae ducimus enim.</p>
-          <a href="#" class="stretched-link"></a>
-        </div>
-      </div><!-- End Service Item -->
 
     </div>
 
@@ -223,14 +180,8 @@
 <!-- Footer -->
 <?php include 'src/footer.php'; ?>
 
-<!-- Scroll Top -->
-<a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
-
-    <!-- bootstrap js link -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+<!-- bootstrap js link -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     
-    <!-- Main JS File -->
-    <script src="src/main.js"></script>
-  
   </body>
 </html>

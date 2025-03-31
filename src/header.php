@@ -16,14 +16,15 @@ if (session_status() == PHP_SESSION_NONE) {
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0 me-5">
                     <li class="nav-item ms-4">
-                        <a class="nav-link active" aria-current="page" href="#"><i class="fa-solid fa-house me-1"></i>Home</a>
+                        <a class="nav-link active" aria-current="page" href="#home"></i>Home</a>
                     </li>
                     <li class="nav-item ms-4">
-                        <a class="nav-link" href="#"><i class="fa-solid fa-bag-shopping me-1"></i> Courses</a>
+                        <a class="nav-link" href="#about-me">About me</a>
                     </li>
                     <li class="nav-item ms-4">
-                        <a class="nav-link" href="#"><i class="fa-solid fa-phone me-1"></i> Contact</a>
+                        <a class="nav-link" href="#courses">Courses</a>
                     </li>
+                    
                 </ul>
                 <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                 <!-- If the user is logged in -->
