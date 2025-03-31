@@ -33,7 +33,7 @@ if (session_status() == PHP_SESSION_NONE) {
                     <li class="nav-item">
                         <a class="nav-link active" aria-current="page" href="../user/cart.php"><i class="fa-solid fa-cart-shopping"></i></a>
                     </li>
-                    <!-- user button -->
+                    <!-- profile button -->
                     <li class="nav-item">
                         <a class="nav-link active" aria-current="page" href="../user/profile.php"><i class="fa-solid fa-house"></i></a>
                     </li>
