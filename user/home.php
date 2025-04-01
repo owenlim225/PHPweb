@@ -98,16 +98,28 @@ if (isset($_SESSION['email'])) {
                 </ul>
         </div>
     </nav>
+    
 </div>
+    
+
+
 
 
 
 <!-- main content -->
-<main class="main pt-5">
+<main class="main pt-5 mt-3">
+<!-- Full-width container for the welcome message -->
+<div class="container-fluid bg-black pt-5 pb-5 mt-6">
+    <div class="row justify-content-center">
+        <div class="col-12 text-center">
+            <h1 class="text-white">Welcome back, <?php echo isset($_SESSION["first_name"]) ? htmlspecialchars($_SESSION["first_name"]) : ''; ?>!</h1>
+        </div>
+    </div>
+</div>
 
   <!-- Hero Section -->
   <section id="home" class="hero section dark-background">
-
+    
     <img src="../img/hero-img.jpg" alt="hero-bg" data-aos="fade-in">
 
     <div class="container d-flex flex-column align-items-center justify-content-center text-center" data-aos="fade-up" data-aos-delay="100">

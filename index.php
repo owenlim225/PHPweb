@@ -16,7 +16,7 @@ include("func/connections.php");
     
     <!-- css file -->
     <link rel="stylesheet" href="src/style.css">
-    <link href="src/main.css" rel="stylesheet">
+    <link rel="stylesheet" href="src/main.css" >
 
     <!-- bootstrap css link -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
@@ -28,7 +28,6 @@ include("func/connections.php");
     <!-- Vendor CSS Files -->
     <link href="src/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
   </head>
-<body>
 <body>
     
 <!-- Navbar -->
@@ -160,30 +159,30 @@ include("func/connections.php");
             if ($result->num_rows > 0) {
               while ($row = $result->fetch_assoc()) {  
                 echo "<div class='col-lg-4 col-md-6' data-aos='fade-up' data-aos-delay='100'>
-                      <div class='service-item position-relative'>
-                          <div class='mb-3'>
-                              <img src='img/courses/{$row['image']}' alt='{$row['course_title']}' class='img-fluid rounded' style='width: 100%; height: 200px; object-fit: cover;'>
-                          </div>
+                        <div class='service-item position-relative'>
+                            <div class='mb-3'>
+                                <img src='img/courses/{$row['image']}' alt='{$row['course_title']}' class='img-fluid rounded' style='width: 100%; height: 200px; object-fit: cover;'>
+                            </div>
 
-                          <div class='card-body text-center'>
-                              <h5 class='card-title fw-bold'>{$row['course_title']}</h5>
-                              <p class='card-text text-muted fw-bold m-2' style='font-size: 12px;'>{$row['instructor']}</p>
-                              <p class='card-text text-muted m-2' style='font-size: 16px;'>
-                                  {$row['description']}
-                              </p>
-                              <p class='card-text fw-bold' style='font-size: 18px;'>₱" . number_format($row['price'], 2) . "</p>
+                            <div class='card-body text-center'>
+                                <h5 class='card-title fw-bold'>{$row['course_title']}</h5>
+                                <p class='card-text text-muted fw-bold m-2' style='font-size: 12px;'>{$row['instructor']}</p>
+                                <p class='card-text text-muted m-2' style='font-size: 16px;'>
+                                    {$row['description']}
+                                </p>
+                                <p class='card-text fw-bold' style='font-size: 18px;'>₱" . number_format($row['price'], 2) . "</p>
 
-                              <div class='m-4'>
-                                <a href='../func/user/buy-course.php?course_id={$row['course_id']}'' class='btn btn-sm btn-success py-2 px-5'>Buy</a>
-                                <a href='../func/user/add-to-cart.php?course_id={$row['course_id']}' class='btn btn-sm btn-outline-danger py-2 px-3'>
-                                    <i class='fa-solid fa-cart-shopping'></i>
-                                </a>
-                                
+                                <div class='m-4'>
+                                  <a href='login.php' class='btn btn-sm btn-success py-2 px-5'>Buy</a>
+                                  <a href='login.php' class='btn btn-sm btn-outline-danger py-2 px-3'>
+                                      <i class='fa-solid fa-cart-shopping'></i>
+                                  </a>
+                                  
 
-                              </div>
-                          </div>
-                      </div>
-                  </div>";
+                                </div>
+                            </div>
+                        </div>
+                      </div>";
                 }
             } else {
                 echo "<p class='text-center text-muted'>No courses found.</p>";
