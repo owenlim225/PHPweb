@@ -32,7 +32,15 @@
                     </li>
                     <!-- cart button -->
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="cart.php"><i class="fa-solid fa-cart-shopping"></i></a>
+                        <a class="nav-link active position-relative" aria-current="page" href="cart.php">
+                            <i class="fa-solid fa-cart-shopping"></i>
+                            <?php if(isset($_SESSION['cart_count']) && $_SESSION['cart_count'] > 0): ?>
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                    <?php echo $_SESSION['cart_count']; ?>
+                                    <span class="visually-hidden">items in cart</span>
+                                </span>
+                            <?php endif; ?>
+                        </a>
                     </li>
                     <!-- Logout button -->
                     <li class="nav-item">

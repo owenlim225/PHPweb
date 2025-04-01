@@ -10,4 +10,6 @@ $conn = new mysqli($host, $username, $password, $dbname);
 if (mysqli_connect_error()) {
     die("Connection failed: " . mysqli_connect_error());
 }
+
+echo "<script>alert('DATABASE CONNECTED');</script>";
 ?>

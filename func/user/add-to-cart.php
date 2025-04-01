@@ -1,39 +1,39 @@
 <?php
 session_start();
-include("connections.php");
+include("../connections.php");
 
-// Check if the user is logged in
 if (!isset($_SESSION['user_id'])) {
-    header("Location: login.php"); // Redirect to login if not logged in
-    exit();
+    die("Error: User is not logged in.");
 }
 
-$user_id = $_SESSION['user_id']; // Get logged-in user's ID
-$course_id = isset($_GET['course_id']) ? intval($_GET['course_id']) : 0;
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['add_to_cart'])) {
+    if (!isset($_POST['course_id']) || empty($_POST['course_id'])) {
+        die("Error: Course ID is missing.");
+    }
 
-// Validate course_id
-if ($course_id <= 0) {
-    die("Invalid course selection.");
-}
+    $user_id = $_SESSION['user_id'];
+    $course_id = intval($_POST['course_id']);
 
-// Check if the course is already in the cart
-$check_cart = $conn->prepare("SELECT * FROM cart WHERE user_id = ? AND course_id = ?");
-$check_cart->bind_param("ii", $user_id, $course_id);
-$check_cart->execute();
-$result = $check_cart->get_result();
+    // Check if the course is already in the cart
+    $check_query = "SELECT * FROM cart WHERE user_id = ? AND course_id = ? AND is_purchased = 0";
+    $stmt = $conn->prepare($check_query);
+    $stmt->bind_param("ii", $user_id, $course_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
 
-if ($result->num_rows > 0) {
-    echo "<script>alert('Course is already in your cart!'); window.history.back();</script>";
-    exit();
-}
+    if ($result->num_rows == 0) {
+        // Insert new cart item
+        $query = "INSERT INTO cart (user_id, course_id, is_purchased, added_at) VALUES (?, ?, 0, NOW())";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param("ii", $user_id, $course_id);
 
-// Insert the course into the cart
-$insert_cart = $conn->prepare("INSERT INTO cart (user_id, course_id) VALUES (?, ?)");
-$insert_cart->bind_param("ii", $user_id, $course_id);
-
-if ($insert_cart->execute()) {
-    echo "<script>alert('Added to cart successfully!'); window.location.href='courses.php';</script>";
-} else {
-    echo "<script>alert('Failed to add to cart. Try again.'); window.history.back();</script>";
+        if ($stmt->execute()) {
+            echo "Course added to cart!";
+        } else {
+            echo "Error adding to cart.";
+        }
+    } else {
+        echo "Course already in cart.";
+    }
 }
 ?>

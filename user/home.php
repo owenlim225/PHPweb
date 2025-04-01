@@ -16,6 +16,19 @@ if (isset($_SESSION['email'])) {
     }
 }
 
+
+// Add this near the top of pages where you show the cart icon
+if (isset($_SESSION['user_id'])) {
+    // Get cart count from database
+    $user_id = $_SESSION['user_id'];
+    $count_query = $conn->prepare("SELECT COUNT(*) as cart_count FROM cart WHERE user_id = ?");
+    $count_query->bind_param("i", $user_id);
+    $count_query->execute();
+    $count_result = $count_query->get_result();
+    $count_row = $count_result->fetch_assoc();
+    $_SESSION['cart_count'] = $count_row['cart_count'];
+}
+
 ?>
 
 
@@ -182,34 +195,37 @@ if (isset($_SESSION['email'])) {
             if ($result->num_rows > 0) {
               while ($row = $result->fetch_assoc()) {  
                 echo "<div class='col-lg-4 col-md-6' data-aos='fade-up' data-aos-delay='100'>
-    <div class='service-item position-relative d-flex flex-column h-100'>
-        <div class='mb-3'>
-            <img src='../img/courses/{$row['image']}' alt='{$row['course_title']}' class='img-fluid rounded' style='width: 100%; height: 200px; object-fit: cover;'>
-        </div>
+                        <div class='service-item position-relative'>
+                            <div class='mb-3'>
+                                <img src='../img/courses/{$row['image']}' alt='{$row['course_title']}' class='img-fluid rounded' style='width: 100%; height: 200px; object-fit: cover;'>
+                            </div>
 
-        <div class='card-body text-center d-flex flex-column flex-grow-1'>
-            <h5 class='card-title fw-bold'>{$row['course_title']}</h5>
-            <p class='card-text text-muted fw-bold m-2' style='font-size: 12px;'>{$row['instructor']}</p>
-            
-            <div class='description-container' style='height: 80px; overflow: hidden; margin-bottom: 10px;'>
-                <p class='card-text text-muted m-2' style='font-size: 16px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;'>
-                    {$row['description']}
-                </p>
-            </div>
-            
-            <p class='card-text fw-bold mt-auto mb-4' style='font-size: 18px;'>₱" . number_format($row['price'], 2) . "</p>
-        </div>
+                            <div class='card-body text-center'>
+                                <h5 class='card-title fw-bold'>{$row['course_title']}</h5>
+                                <p class='card-text text-muted fw-bold m-2' style='font-size: 12px;'>{$row['instructor']}</p>
+                                <p class='card-text text-muted m-2' style='font-size: 16px;'>
+                                    {$row['description']}
+                                </p>
+                                <p class='card-text fw-bold' style='font-size: 18px;'>₱" . number_format($row['price'], 2) . "</p>
 
-        <div class='button-container p-3 mt-auto border-top'>
-            <div class='d-flex justify-content-center gap-2'>
-                <a href='../func/user/buy-course.php?course_id={$row['course_id']}' class='btn btn-sm btn-success py-2 px-5'>Buy</a>
-                <a href='../func/user/add-to-cart.php?course_id={$row['course_id']}' class='btn btn-sm btn-outline-danger py-2 px-3'>
-                    <i class='fa-solid fa-cart-shopping'></i>
-                </a>
-            </div>
-        </div>
-    </div>
-</div>";
+                               <div class='button-container p-3 mt-auto border-top'>
+                                    <div class='d-flex justify-content-center gap-2'>
+                                        <a href='../func/user/buy-course.php?course_id={$row['course_id']}' class='btn btn-sm btn-success py-2 px-5'>Buy</a>
+
+                                        <form action='../func/user/add-to-cart.php' method='POST'>
+                                            <input type='hidden' name='course_id' value='{$row['course_id']}'>
+                                            <button type='submit' name='add_to_cart' class='btn btn-sm btn-outline-danger py-2 px-3 position-relative'>
+                                                <i class='fa-solid fa-cart-shopping'></i>
+                                            </button>
+                                        </form>
+
+
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>";
                 }
             } else {
                 echo "<p class='text-center text-muted'>No courses found.</p>";
