@@ -1,6 +1,12 @@
 <?php
-
+session_start();
 include("../func/connections.php");
+
+// Redirect non-admins
+if (!isset($_SESSION["is_admin"]) || $_SESSION["is_admin"] != 1) {
+    header("Location: ../login.php");
+    exit();
+}
 
 $message = "";
 

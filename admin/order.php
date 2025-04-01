@@ -1,3 +1,13 @@
+<?php
+session_start();
+
+// Redirect non-admins
+if (!isset($_SESSION["is_admin"]) || $_SESSION["is_admin"] != 1) {
+    header("Location: ../login.php");
+    exit();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>

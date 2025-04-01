@@ -1,6 +1,8 @@
 <?php
-include("func/connections.php");
 session_start();
+include("func/connections.php");
+
+
 
 $message = "";
 
@@ -30,7 +32,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             if ($is_admin == 1) {
                 header("Location: admin/dashboard.php");
             } else {
-                header("Location: user/shop.php");
+                header("Location: user/home.php");
             }
             exit();
         } else {

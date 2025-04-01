@@ -1,6 +1,12 @@
 <?php
-
+session_start();
 include("../func/connections.php");
+
+// Redirect non-admins
+if (!isset($_SESSION["is_admin"]) || $_SESSION["is_admin"] != 1) {
+    header("Location: ../login.php");
+    exit();
+}
 
 // Fetch Total Users (Exclude Admins)
 $user_query = "SELECT COUNT(*) AS total_users FROM user WHERE is_admin = 0;";

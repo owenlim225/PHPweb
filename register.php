@@ -53,7 +53,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["register"])) {
     $stmt->bind_param("sssssi", $first_name, $last_name, $contact, $email, $hashed_password, $is_admin);
 
     if ($stmt->execute()) {
-        echo "<script>alert('✅ Registered successfully!');</script>";
+        echo "<script>window.onload = function(){ alert('✅ Registered successfully!'); }</script>";
         header("Location: login.php"); // Redirect on success
     } else {
         $_SESSION['message'] = "<div class='error'>⚠️ Error adding user: " . $conn->error . "</div>";

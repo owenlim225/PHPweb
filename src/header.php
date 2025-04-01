@@ -7,7 +7,7 @@ if (session_status() == PHP_SESSION_NONE) {
 
 <!-- navbar -->
 <div class="container-fluid p-0">
-    <nav class="navbar navbar-expand-lg navbar-dark bg-black">
+    <nav id="navbar" class="navbar navbar-expand-lg navbar-dark bg-black bg-opacity-95 fixed-top">
         <div class="container-fluid">
             <a class="navbar-brand" href="#"><img src="img/logo.png" alt="logo" class="fa-custom-logo"></a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -28,7 +28,7 @@ if (session_status() == PHP_SESSION_NONE) {
                 </ul>
                 <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                 <!-- If the user is logged in -->
-                <?php if (isset($_SESSION["user"])): ?>
+                <?php if (isset($_SESSION["user_id"])): ?>
                     <!-- cart button -->
                     <li class="nav-item">
                         <a class="nav-link active" aria-current="page" href="../user/cart.php"><i class="fa-solid fa-cart-shopping"></i></a>
@@ -37,14 +37,18 @@ if (session_status() == PHP_SESSION_NONE) {
                     <li class="nav-item">
                         <a class="nav-link active" aria-current="page" href="../user/profile.php"><i class="fa-solid fa-house"></i></a>
                     </li>
+                    <!-- profile button -->
+                    <li class="nav-item">
+                    <a class="nav-link active text-danger" aria-current="page" href="func/logout.php">Logout</a>
+                    </li>
 
                 <!-- If the user is not logged in -->
                 <?php else: ?>
                     <li class="nav-item">
-                        <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">Login</a>
+                        <a class="nav-link" href="login.php">Login</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#registerModal">Register</a>
+                        <a class="nav-link" href="register.php">Register</a>
                     </li>
                 <?php endif; ?>
                 </ul>
