@@ -97,6 +97,7 @@ $total_courses = $course_result->fetch_assoc()['total_courses'];
                                             <th scope="col">First Name</th>
                                             <th scope="col">Last Name</th>
                                             <th scope="col">Email</th>
+                                            <th scope="col">Account Type</th>
                                         </tr>
                                     </thead>
 
@@ -108,14 +109,13 @@ $total_courses = $course_result->fetch_assoc()['total_courses'];
 
                                             if ($result->num_rows > 0) {
                                                 while ($row = $result->fetch_assoc()) {  
-                                            ?>
-                                                    <tr>
-                                                        <td class="fw-bold"><?php echo $row['user_id']; ?></td>
-                                                        <td><?php echo $row['first_name']; ?></td>
-                                                        <td><?php echo $row['last_name']; ?></td>
-                                                        <td><?php echo $row['email']; ?></td>                                    
-                                                    </tr>
-                                            <?php
+                                                    echo "<tr>
+                                                        <td class='fw-bold'>{$row['user_id']}</td>
+                                                        <td>{$row['first_name']}</td>
+                                                        <td>{$row['last_name']}</td>
+                                                        <td>{$row['email']}</td>
+                                                        <td>" . ($row['is_admin'] == 1 ? 'Admin' : 'User') . "</td>                           
+                                                    </tr>";
                                                 }
                                             } else {
                                                 echo "<tr><td colspan='5' class='text-center text-muted'>No users found.</td></tr>";

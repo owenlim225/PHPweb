@@ -2,6 +2,8 @@
 session_start();
 include("../func/connections.php");
 
+$message = "";
+
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["add_user"])) {
     $first_name = trim($_POST["first_name"]);
     $last_name = trim($_POST["last_name"]);
@@ -98,6 +100,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["add_user"])) {
                 <div class="col-md-4 bg-white p-4 rounded shadow-lg mt-4 text-center" style="box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); transition: transform 0.3s ease;">
                     <h2 class="mb-3 text-dark">Add New User</h2>
                     
+                    <?php echo $message; ?>
+
                     <form action="users.php" method="POST">
                         <!-- name -->
                         <div class="mb-3" style="display: flex; gap: 10px;">
@@ -174,8 +178,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["add_user"])) {
                                                     <td>{$row['email']}</td>
                                                     <td>" . ($row['is_admin'] == 1 ? 'Admin' : 'User') . "</td>
                                                     <td>
-                                                        <a href='../func/edit-user.php?user_id={$row['user_id']}' class='btn btn-sm btn-outline-success'>✏️ Edit</a>
-                                                        <a href='../func/delete-user.php?user_id={$row['user_id']}' class='btn btn-sm btn-outline-danger' 
+                                                        <a href='../func/admin/edit-user.php?user_id={$row['user_id']}' class='btn btn-sm btn-outline-success'>✏️ Edit</a>
+                                                        <a href='../func/admin/delete-user.php?user_id={$row['user_id']}' class='btn btn-sm btn-outline-danger' 
                                                             onclick='return confirm('Are you sure you want to delete this user?');'>🗑 Delete
                                                         </a>
                                                     </td>
