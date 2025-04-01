@@ -16,7 +16,7 @@ include("func/connections.php");
     
     <!-- css file -->
     <link rel="stylesheet" href="src/style.css">
-    <link href="src/main.css" rel="stylesheet">
+    <link rel="stylesheet" href="src/main.css" >
 
     <!-- bootstrap css link -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
@@ -47,7 +47,7 @@ include("func/connections.php");
       <p><span class="fs-5 text-warning fst-italic">Designer, Developer, Freelancer, Musician</span></p>
     </div>
 
-  </section><!-- /Hero Section -->
+  </section>
 
   <!-- About Section -->
   <section id="about-me" class="about section">
