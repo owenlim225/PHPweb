@@ -2,7 +2,10 @@
 session_start();
 include("../func/connections.php");
 
+$user_id = isset($_GET["user_id"]) ? intval($_GET["user_id"]) : 0;
 $message = "";
+$user = null; // Ensure $user is defined
+
 
 // Ensure user is logged in before querying
 if (isset($_SESSION['email'])) {
@@ -17,9 +20,69 @@ if (isset($_SESSION['email'])) {
         $_SESSION['first_name'] = $user['first_name'];
         $_SESSION['last_name'] = $user['last_name'];
         $_SESSION['contact'] = $user['contact'];
+        
+    }
+}
+
+
+// Handle form submission
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["update_user"])) {
+    $first_name = trim($_POST["first_name"]);
+    $last_name = trim($_POST["last_name"]);
+    $contact = trim($_POST["contact"]);
+    $new_password = $_POST["password"];
+    $confirm_password = $_POST["confirm_password"];
+    $is_admin = isset($_POST["is_admin"]) ? intval($_POST["is_admin"]) : 0;
+    $user_id = isset($_POST["user_id"]) ? $_POST["user_id"] : $user['user_id'];
+
+    // Validate required fields
+    if (empty($first_name) || empty($last_name) || empty($contact)) {
+        $message = "<div class='error'>⚠️ Name and contact fields are required.</div>";
+    } elseif (!empty($new_password) && (strlen($new_password) < 6 || $new_password !== $confirm_password)) {
+        $message = "<div class='error'>⚠️ Password must be at least 6 characters and match.</div>";
+    }
+
+    if (empty($message)) {
+        // Prepare dynamic update query
+        $updates = "first_name=?, last_name=?, contact=?";
+        $params = [$first_name, $last_name, $contact];
+        $types = "sss";
+
+        // Add admin update if needed
+        if (isset($is_admin)) {
+            $updates .= ", is_admin=?";
+            $params[] = $is_admin;
+            $types .= "i";
+        }
+
+        if (!empty($new_password)) {
+            $hashed_password = password_hash($new_password, PASSWORD_DEFAULT);
+            $updates .= ", password=?";
+            $params[] = $hashed_password;
+            $types .= "s";
+        }
+
+        // Execute update query
+        $update_sql = "UPDATE user SET $updates WHERE user_id=?";
+        $params[] = $user_id;
+        $types .= "i";
+
+        $stmt = $conn->prepare($update_sql);
+        $stmt->bind_param($types, ...$params);
+
+        if ($stmt->execute()) {
+            $message = "<div class='success'>✅ Profile updated successfully!</div>";
+            // Refresh user data in session
+            $_SESSION['first_name'] = $first_name;
+            $_SESSION['last_name'] = $last_name;
+            $_SESSION['contact'] = $contact;
+        } else {
+            $message = "<div class='error'>⚠️ Error updating profile: " . $stmt->error . "</div>";
+        }
     }
 }
 ?>
+
 
 <!doctype html>
 <html lang="en">
@@ -106,44 +169,88 @@ if (isset($_SESSION['email'])) {
     <div class="container py-4">
         <div class="row justify-content-center">
             <!-- Left column: User profile -->
-            <div class="col-md-3 bg-white p-4 rounded shadow-lg mt-4 text-center p-2">
-                <span class="mb-3 text-dark">Edit User</span>
+            <div class="col-md-3 bg-white p-4 rounded shadow-lg mt-4 text-center">
+                <div class="profile-header d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="m-0">User Profile</h5>
+                    <button id="editProfileBtn" class="btn btn-sm btn-outline-primary">
+                        <i class="fas fa-pencil-alt me-1"></i> Edit Profile
+                    </button>
+                </div>
 
-                <!-- user name -->
-                <h1><?php echo isset($_SESSION["first_name"]) ? htmlspecialchars($_SESSION["first_name"]) : ''; ?></h1><br>
+                <!-- Profile picture -->
+                <div class="profile-image-container mb-3">
+                    <div class="profile-image mx-auto rounded-circle bg-light d-flex align-items-center justify-content-center" style="width: 100px; height: 100px;">
+                        <span class="display-4 text-muted d-flex justify-content-center"><?php echo substr(isset($_SESSION["first_name"]) ? htmlspecialchars($_SESSION["first_name"]) : '', 0, 1); ?></span>
+                    </div>
+                </div>
+
                 <?php echo $message; ?>
 
-                <form action="edit-user.php?user_id=<?php echo $user_id; ?>" method="POST">
-                    <div class="mb-3 d-flex gap-2">
-                        <input type="text" class="form-control border-0 border-bottom" name="first_name" required value="<?php echo isset($_SESSION["first_name"]) ? htmlspecialchars($_SESSION["first_name"]) : ''; ?>">
-                        <input type="text" class="form-control border-0 border-bottom" name="last_name" required value="<?php echo isset($_SESSION["last_name"]) ? htmlspecialchars($_SESSION["last_name"]) : ''; ?>">
+                <!-- View mode -->
+                <div id="viewProfileMode">
+                    <h3 class="mb-1"><?php echo isset($_SESSION["first_name"]) ? htmlspecialchars($_SESSION["first_name"] . ' ' . $_SESSION["last_name"]) : ''; ?></h3>
+
+                    <div class="profile-info mb-4 p-5">
+                        <div class="d-flex align-items-center mb-2">
+                            <i class="fas fa-phone text-primary me-2"></i>
+                            <div><?php echo isset($_SESSION["contact"]) ? htmlspecialchars($_SESSION["contact"]) : ''; ?></div>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-envelope text-primary me-2"></i>
+                            <div><?php echo isset($_SESSION["email"]) ? htmlspecialchars($_SESSION["email"]) : ''; ?></div>
+                        </div>
                     </div>
+                </div>
 
-                    <div class="mb-3">
-                        <input type="text" name="contact" class="form-control border-0 border-bottom" required value="<?php echo isset($_SESSION["contact"]) ? htmlspecialchars($_SESSION["contact"]) : ''; ?>">
-                    </div>
+                <!-- Edit mode (initially hidden) -->
+                <div id="editProfileMode" style="display: none;">
+                    <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="POST">
+                        <div class="mb-3 d-flex gap-2">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="first_name" name="first_name" required value="<?php echo isset($_SESSION["first_name"]) ? htmlspecialchars($_SESSION["first_name"]) : ''; ?>">
+                                <label for="first_name">First Name</label>
+                            </div>
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="last_name" name="last_name" required value="<?php echo isset($_SESSION["last_name"]) ? htmlspecialchars($_SESSION["last_name"]) : ''; ?>">
+                                <label for="last_name">Last Name</label>
+                            </div>
+                        </div>
 
-                    <div class="mb-3">
-                        <input type="email" name="email" class="form-control border-0 border-bottom" required value="<?php echo isset($_SESSION["email"]) ? htmlspecialchars($_SESSION["email"]) : ''; ?>">
-                    </div>
+                        <div class="form-floating mb-3">
+                            <input type="text" name="contact" id="contact" class="form-control" required value="<?php echo isset($_SESSION["contact"]) ? htmlspecialchars($_SESSION["contact"]) : ''; ?>">
+                            <label for="contact">Contact Number</label>
+                        </div>
 
-                    <div class="mb-3">
-                        <input type="password" name="password" class="form-control border-0 border-bottom" placeholder="New Password">
-                    </div>
+                        <div class="form-floating mb-3">
+                            <input type="email" name="email" id="email" class="form-control" readonly disabled value="<?php echo isset($_SESSION["email"]) ? htmlspecialchars($_SESSION["email"]) : ''; ?>">
+                            <label for="email">Email Address</label>
+                        </div>
 
-                    <div class="mb-3">
-                        <input type="password" name="confirm_password" class="form-control border-0 border-bottom" placeholder="Retype Password">
-                    </div>
+                        <div class="form-floating mb-3">
+                            <input type="password" name="password" id="password" class="form-control" placeholder="New Password">
+                            <label for="password">New Password</label>
+                        </div>
 
-                    <button type="submit" name="update_user" class="btn btn-dark w-100 fw-bold">Update User</button>
-                </form>
+                        <div class="form-floating mb-3">
+                            <input type="password" name="confirm_password" id="confirm_password" class="form-control" placeholder="Retype Password">
+                            <label for="confirm_password">Confirm Password</label>
+                        </div>
 
-                <p class="mt-5"><a href="users.php">Back to Users</a></p>
+                        <div class="d-flex gap-2">
+                            <button type="submit" name="update_user" class="btn btn-primary flex-grow-1">
+                                <i class="fas fa-save me-1"></i> Save Changes
+                            </button>
+                            <button type="button" id="cancelEditBtn" class="btn btn-outline-secondary">
+                                Cancel
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
-            
+
             <div class="col-md-1"></div> <!-- Add space between columns -->
 
-            
+
             <!-- Right column: User courses -->
             <div class="col-md-8 bg-white p-4 rounded shadow-lg mt-4 text-center">
                 <h2 class="mb-3 text-dark">Edit Profile</h2>
@@ -200,6 +307,27 @@ if (isset($_SESSION['email'])) {
 
 
 <?php include 'footer.php'; ?>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const editProfileBtn = document.getElementById('editProfileBtn');
+    const cancelEditBtn = document.getElementById('cancelEditBtn');
+    const viewProfileMode = document.getElementById('viewProfileMode');
+    const editProfileMode = document.getElementById('editProfileMode');
+    
+    // Toggle to edit mode
+    editProfileBtn.addEventListener('click', function() {
+        viewProfileMode.style.display = 'none';
+        editProfileMode.style.display = 'block';
+    });
+    
+    // Cancel edit and return to view mode
+    cancelEditBtn.addEventListener('click', function() {
+        editProfileMode.style.display = 'none';
+        viewProfileMode.style.display = 'block';
+    });
+});
+</script>
 
 <!-- bootstrap js link -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
