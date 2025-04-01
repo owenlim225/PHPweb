@@ -115,7 +115,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["add_course"])) {
                             <textarea name="description" class="form-control border-0 border-bottom" required placeholder="Description"></textarea>
                         </div>
                         <div class="mb-3">
-                            <input type="text" name="instructor" class="form-control border-0 border-bottom" required placeholder="Instructor">
+                            <input type="text" name="instructor" class="form-control border-0 border-bottom" required placeholder="Category">
                         </div>
                         <div class="mb-3">
                             <input type="file" name="image" class="form-control border-0 border-bottom" required>
