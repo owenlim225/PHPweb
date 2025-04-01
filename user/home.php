@@ -27,7 +27,7 @@ if (isset($_SESSION['email'])) {
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="author" content="Sherwin P. Limosnero">
-    <title>Sherwin Limosnero</title>
+    <title>Home</title>
     
     <!-- css file -->
     <link href="../src/style.css" rel="stylesheet">
@@ -45,65 +45,8 @@ if (isset($_SESSION['email'])) {
   </head>
 <body>
     
-<!-- navbar -->
-<div class="container-fluid p-0">
-    <nav id="navbar" class="navbar navbar-expand-lg navbar-dark bg-black bg-opacity-95 fixed-top">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#"><img src="../img/logo.png" alt="logo" class="fa-custom-logo"></a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0 me-5">
-                    <li class="nav-item ms-4">
-                        <a class="nav-link active" aria-current="page" href="#home"></i>Home</a>
-                    </li>
-                    <li class="nav-item ms-4">
-                        <a class="nav-link" href="#about-me">About me</a>
-                    </li>
-                    <li class="nav-item ms-4">
-                        <a class="nav-link" href="#courses">Courses</a>
-                    </li>
-                    
-                </ul>
-                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                <!-- If the user is logged in -->
-                <?php if (isset($_SESSION["user_id"])): ?>
-                    <!-- profile button -->
-                    <li class="nav-item">
-                        <a class="nav-link active text-warning" aria-current="page" href="../user/profile.php">
-                            <i>
-                                <?php echo isset($_SESSION["first_name"]) ? htmlspecialchars($_SESSION["first_name"]) : 'Profile'; ?>
-                            </i>
-                        </a>
-                    </li>
-                    <!-- cart button -->
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="../user/cart.php"><i class="fa-solid fa-cart-shopping"></i></a>
-                    </li>
-                    <!-- Logout button -->
-                    <li class="nav-item">
-                    <a class="nav-link active text-danger" aria-current="page" href="../func/logout.php">Logout</a>
-                    </li>
 
-                <!-- If the user is not logged in -->
-                <?php else: ?>
-                    <li class="nav-item">
-                        <a class="nav-link" href="login.php">Login</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="register.php">Register</a>
-                    </li>
-                <?php endif; ?>
-                </ul>
-        </div>
-    </nav>
-    
-</div>
-    
-
-
-
+<?php include 'header.php'; ?>
 
 
 <!-- main content -->
@@ -275,42 +218,7 @@ if (isset($_SESSION['email'])) {
 </main>
 
 
-<!-- footer page -->
-<footer class="bg-dark text-light text-center py-4">
-    <div class="container">
-        <!-- Logo -->
-        <div class="mb-3">
-            <a class="navbar-brand" href="#">
-                <img src="../img/logo.png" alt="logo" class="fa-custom-logo">
-            </a>
-        </div>
-
-        <!-- Copyright -->
-        <h5 class="fw-bold mb-1">© 2025 SHERWIN LIMOSNERO</h5>
-        <p class="fw-bold text-uppercase small mb-3">All Rights Reserved</p>
-
-        <!-- Support Button -->
-        <a href="#" class="btn btn-primary mb-3">
-            <i class="fa-solid fa-fire me-2"></i> Support my work
-        </a>
-
-        <!-- Social Media Links -->
-        <div class="d-flex justify-content-center gap-3 mt-3">
-            <a href="#" class="d-flex justify-content-center align-items-center rounded-circle bg-light text-dark fs-4" style="width: 50px; height: 50px;">
-                <i class="bi bi-twitter-x"></i>
-            </a>
-            <a href="#" class="d-flex justify-content-center align-items-center rounded-circle bg-light text-dark fs-4" style="width: 50px; height: 50px;">
-                <i class="bi bi-facebook"></i>
-            </a>
-            <a href="#" class="d-flex justify-content-center align-items-center rounded-circle bg-light text-dark fs-4" style="width: 50px; height: 50px;">
-                <i class="bi bi-instagram"></i>
-            </a>
-            <a href="#" class="d-flex justify-content-center align-items-center rounded-circle bg-light text-dark fs-4" style="width: 50px; height: 50px;">
-                <i class="bi bi-linkedin"></i>
-            </a>
-        </div>
-    </div>
-</footer>
+<?php include 'footer.php'; ?>
 
 <!-- bootstrap js link -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>

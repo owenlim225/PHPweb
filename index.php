@@ -38,7 +38,7 @@ include("func/connections.php");
 <main class="main pt-5">
 
   <!-- Hero Section -->
-  <section id="home" class="hero section dark-background">
+  <section id="home" class="hero section dark-background mt-4 pt-7">
 
     <img src="img/hero-img.jpg" alt="hero-bg" data-aos="fade-in">
 
@@ -59,7 +59,7 @@ include("func/connections.php");
           </div>       
 
           <!-- Right Column: About Me -->
-          <div class="col-md-8">
+          <div class="col-md-8 mt-1">
             <div class="about-me">
                   <h4>About Me</h4>
                   <p>
