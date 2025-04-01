@@ -1,5 +1,5 @@
 <?php
-include("connections.php");
+include("../connections.php");
 
 $course_id = isset($_GET["course_id"]) ? intval($_GET["course_id"]) : 0;
 $message = "";

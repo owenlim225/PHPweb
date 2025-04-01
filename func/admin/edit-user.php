@@ -1,5 +1,5 @@
 <?php
-include("connections.php");
+include("../connections.php");
 
 $user_id = isset($_GET["user_id"]) ? intval($_GET["user_id"]) : 0;
 $message = "";

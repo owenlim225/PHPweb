@@ -22,11 +22,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["add_user"])) {
 
     // Validate fields
     if (empty($first_name) || empty($last_name) || empty($contact) || empty($email)) {
-        $_SESSION['message'] = "<div class='error'>⚠️ All fields are required except password.</div>";
+        $message = "<div class='error'>⚠️ All fields are required except password.</div>";
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $_SESSION['message'] = "<div class='error'>⚠️ Invalid email format.</div>";
+        $message = "<div class='error'>⚠️ Invalid email format.</div>";
     } elseif (!empty($password) && (strlen($password) < 6 || $password !== $confirm_password)) {
-        $_SESSION['message'] = "<div class='error'>⚠️ Password must be at least 6 characters and match.</div>";
+        $message = "<div class='error'>⚠️ Password must be at least 6 characters and match.</div>";
     } else {
         // Hash password if provided
         $hashed_password = !empty($password) ? password_hash($password, PASSWORD_DEFAULT) : null;
@@ -39,7 +39,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["add_user"])) {
         $result = $stmt->get_result();
 
         if ($result->num_rows > 0) {
-            $_SESSION['message'] = "<div class='error'>⚠️ Email already exists.</div>";
+            $message = "<div class='error'>⚠️ Email already exists.</div>";
         } else {
             // Insert user into database
             $sql = "INSERT INTO user (first_name, last_name, contact, email, password, is_admin) 
@@ -48,10 +48,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["add_user"])) {
             $stmt->bind_param("sssssi", $first_name, $last_name, $contact, $email, $hashed_password, $is_admin);
 
             if ($stmt->execute()) {
-                $_SESSION['message'] = "<div class='success'>✅ User added successfully!</div>";
+                $message = "<div class='success'>✅ User added successfully!</div>";
                 
             } else {
-                $_SESSION['message'] = "<div class='error'>⚠️ Error adding user: " . $conn->error . "</div>";
+                $message = "<div class='error'>⚠️ Error adding user: " . $conn->error . "</div>";
             }
         }
     }
