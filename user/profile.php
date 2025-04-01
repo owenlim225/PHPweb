@@ -143,6 +143,7 @@ if (isset($_SESSION['email'])) {
             
             <div class="col-md-1"></div> <!-- Add space between columns -->
 
+            
             <!-- Right column: User courses -->
             <div class="col-md-8 bg-white p-4 rounded shadow-lg mt-4 text-center">
                 <h2 class="mb-3 text-dark">Edit Profile</h2>
