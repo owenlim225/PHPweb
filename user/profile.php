@@ -2,20 +2,23 @@
 session_start();
 include("../func/connections.php");
 
+$message = "";
+
 // Ensure user is logged in before querying
 if (isset($_SESSION['email'])) {
-    $sql = "SELECT first_name FROM user WHERE email = ?";
+    $sql = "SELECT * FROM user WHERE email = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("s", $_SESSION['email']);
     $stmt->execute();
     $result = $stmt->get_result();
     
     if ($result->num_rows > 0) {
-        $row = $result->fetch_assoc();
-        $_SESSION['first_name'] = $row['first_name'];
+        $user = $result->fetch_assoc();
+        $_SESSION['first_name'] = $user['first_name'];
+        $_SESSION['last_name'] = $user['last_name'];
+        $_SESSION['contact'] = $user['contact'];
     }
 }
-
 ?>
 
 <!doctype html>
@@ -29,6 +32,7 @@ if (isset($_SESSION['email'])) {
     <!-- css file -->
     <link href="../src/style.css" rel="stylesheet">
     <link href="../src/main.css" rel="stylesheet">
+    <link href="../src/course-card.css" rel="stylesheet">
 
     <!-- bootstrap css link -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
@@ -56,11 +60,9 @@ if (isset($_SESSION['email'])) {
                     <li class="nav-item ms-4">
                         <a class="nav-link active" aria-current="page" href="#home"></i>Home</a>
                     </li>
+
                     <li class="nav-item ms-4">
-                        <a class="nav-link" href="#cart-section">Cart</a>
-                    </li>
-                    <li class="nav-item ms-4">
-                        <a class="nav-link" href="#courses-section">Courses</a>
+                        <a class="nav-link" href="#courses-section">My Courses</a>
                     </li>
                     
                 </ul>
@@ -98,6 +100,103 @@ if (isset($_SESSION['email'])) {
     </nav>
     
 </div>
+
+
+<main class="main pt-5 mt-3">
+    <div class="container py-4">
+        <div class="row justify-content-center">
+            <!-- Left column: User profile -->
+            <div class="col-md-3 bg-white p-4 rounded shadow-lg mt-4 text-center p-2">
+                <span class="mb-3 text-dark">Edit User</span>
+
+                <!-- user name -->
+                <h1><?php echo isset($_SESSION["first_name"]) ? htmlspecialchars($_SESSION["first_name"]) : ''; ?></h1><br>
+                <?php echo $message; ?>
+
+                <form action="edit-user.php?user_id=<?php echo $user_id; ?>" method="POST">
+                    <div class="mb-3 d-flex gap-2">
+                        <input type="text" class="form-control border-0 border-bottom" name="first_name" required value="<?php echo isset($_SESSION["first_name"]) ? htmlspecialchars($_SESSION["first_name"]) : ''; ?>">
+                        <input type="text" class="form-control border-0 border-bottom" name="last_name" required value="<?php echo isset($_SESSION["last_name"]) ? htmlspecialchars($_SESSION["last_name"]) : ''; ?>">
+                    </div>
+
+                    <div class="mb-3">
+                        <input type="text" name="contact" class="form-control border-0 border-bottom" required value="<?php echo isset($_SESSION["contact"]) ? htmlspecialchars($_SESSION["contact"]) : ''; ?>">
+                    </div>
+
+                    <div class="mb-3">
+                        <input type="email" name="email" class="form-control border-0 border-bottom" required value="<?php echo isset($_SESSION["email"]) ? htmlspecialchars($_SESSION["email"]) : ''; ?>">
+                    </div>
+
+                    <div class="mb-3">
+                        <input type="password" name="password" class="form-control border-0 border-bottom" placeholder="New Password">
+                    </div>
+
+                    <div class="mb-3">
+                        <input type="password" name="confirm_password" class="form-control border-0 border-bottom" placeholder="Retype Password">
+                    </div>
+
+                    <button type="submit" name="update_user" class="btn btn-dark w-100 fw-bold">Update User</button>
+                </form>
+
+                <p class="mt-5"><a href="users.php">Back to Users</a></p>
+            </div>
+            
+            <div class="col-md-1"></div> <!-- Add space between columns -->
+
+            <!-- Right column: User courses -->
+            <div class="col-md-8 bg-white p-4 rounded shadow-lg mt-4 text-center">
+                <h2 class="mb-3 text-dark">Edit Profile</h2>
+                <div class="row justify-content-center">
+                    <div class="col-lg-10">
+                        <div class="row">
+                            <?php
+                                // Fetch courses
+                                $sql = "SELECT * FROM courses";
+                                $result = $conn->query($sql);
+
+                                if ($result->num_rows > 0) {
+                                    while ($row = $result->fetch_assoc()) {  
+                                        echo "<div class='service-item col-md-4 mb-4'>
+                                                <div class='course-card'>
+                                                    <div class='course-image-container'>
+                                                        <img src='../img/courses/{$row['image']}' alt='{$row['course_title']}' class='course-image'>
+                                                    </div>
+
+                                                    <div class='course-info p-3'>
+                                                        <h5 class='mb-2 text-truncate'>{$row['course_title']}</h5>
+                                                        <p class='mb-0 text-muted small'><i class='fas fa-user-tie me-2'></i>{$row['instructor']}</p>
+                                                    </div>
+                                                    
+                                                    <div class='course-card-body'>
+                                                        <h5 class='course-title'>{$row['course_title']}</h5>
+                                                        <p class='course-instructor'>{$row['instructor']}</p>
+                                                        <a href='../func/admin/edit-course.php?course_id={$row['course_id']}' class='edit-button'>
+                                                            <span class='edit-icon'>✏️</span> Start Course
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>";
+                                    }
+                                } else {
+                                    echo "<p class='text-center text-muted'>No courses found.</p>";
+                                }
+                            ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+
+
+
+
+
+
+
+
 
 <?php include 'footer.php'; ?>
 
