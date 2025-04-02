@@ -1,7 +1,14 @@
 <?php
-
+session_start();
 include("../func/connections.php");
 
+// Redirect non-admins
+if (!isset($_SESSION["is_admin"]) || $_SESSION["is_admin"] != 1) {
+    header("Location: ../login.php");
+    exit();
+}
+
+$message = "";
 
 // Handle Course Insert
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["add_course"])) {
@@ -98,6 +105,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["add_course"])) {
                     style="box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); transition: transform 0.3s ease;">
                     <h2 class="mb-3 text-dark">Add New Course</h2>
                     
+                    <?php echo $message; ?>
+
                     <form action="courses.php" method="POST" enctype="multipart/form-data">
                         <div class="mb-3">
                             <input type="text" name="course_title" class="form-control border-0 border-bottom" required placeholder="Course Title">
@@ -106,7 +115,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["add_course"])) {
                             <textarea name="description" class="form-control border-0 border-bottom" required placeholder="Description"></textarea>
                         </div>
                         <div class="mb-3">
-                            <input type="text" name="instructor" class="form-control border-0 border-bottom" required placeholder="Instructor">
+                            <input type="text" name="instructor" class="form-control border-0 border-bottom" required placeholder="Category">
                         </div>
                         <div class="mb-3">
                             <input type="file" name="image" class="form-control border-0 border-bottom" required>
@@ -140,8 +149,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["add_course"])) {
                                                         <p class='card-text text-muted fw-bold' style='font-size: 12px;'>{$row['instructor']}</p>
                                                         <p class='card-text text-muted' style='font-size: 16px;'>{$row['description']}</p>
                                                         <p class='card-text fw-bold'>₱" . number_format($row['price'], 2) . "</p>
-                                                        <a href='../func/edit-course.php?course_id={$row['course_id']}' class='btn btn-sm btn-outline-success'>✏️ Edit</a>
-                                                        <a href='../func/delete-course.php?course_id={$row['course_id']}' class='btn btn-sm btn-outline-danger' 
+                                                        <a href='../func/admin/edit-course.php?course_id={$row['course_id']}' class='btn btn-sm btn-outline-success'>✏️ Edit</a>
+                                                        <a href='../func/admin/delete-course.php?course_id={$row['course_id']}' class='btn btn-sm btn-outline-danger' 
                                                             onclick=\"return confirm('Are you sure you want to delete this course?');\">🗑 Delete
                                                         </a>
                                                     </div>

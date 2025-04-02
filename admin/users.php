@@ -2,6 +2,15 @@
 session_start();
 include("../func/connections.php");
 
+// Redirect non-admins
+if (!isset($_SESSION["is_admin"]) || $_SESSION["is_admin"] != 1) {
+    header("Location: ../login.php");
+    exit();
+}
+
+
+$message = "";
+
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["add_user"])) {
     $first_name = trim($_POST["first_name"]);
     $last_name = trim($_POST["last_name"]);
@@ -13,11 +22,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["add_user"])) {
 
     // Validate fields
     if (empty($first_name) || empty($last_name) || empty($contact) || empty($email)) {
-        $_SESSION['message'] = "<div class='error'>⚠️ All fields are required except password.</div>";
+        $message = "<div class='error'>⚠️ All fields are required except password.</div>";
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $_SESSION['message'] = "<div class='error'>⚠️ Invalid email format.</div>";
+        $message = "<div class='error'>⚠️ Invalid email format.</div>";
     } elseif (!empty($password) && (strlen($password) < 6 || $password !== $confirm_password)) {
-        $_SESSION['message'] = "<div class='error'>⚠️ Password must be at least 6 characters and match.</div>";
+        $message = "<div class='error'>⚠️ Password must be at least 6 characters and match.</div>";
     } else {
         // Hash password if provided
         $hashed_password = !empty($password) ? password_hash($password, PASSWORD_DEFAULT) : null;
@@ -30,7 +39,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["add_user"])) {
         $result = $stmt->get_result();
 
         if ($result->num_rows > 0) {
-            $_SESSION['message'] = "<div class='error'>⚠️ Email already exists.</div>";
+            $message = "<div class='error'>⚠️ Email already exists.</div>";
         } else {
             // Insert user into database
             $sql = "INSERT INTO user (first_name, last_name, contact, email, password, is_admin) 
@@ -39,10 +48,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["add_user"])) {
             $stmt->bind_param("sssssi", $first_name, $last_name, $contact, $email, $hashed_password, $is_admin);
 
             if ($stmt->execute()) {
-                $_SESSION['message'] = "<div class='success'>✅ User added successfully!</div>";
+                $message = "<div class='success'>✅ User added successfully!</div>";
                 
             } else {
-                $_SESSION['message'] = "<div class='error'>⚠️ Error adding user: " . $conn->error . "</div>";
+                $message = "<div class='error'>⚠️ Error adding user: " . $conn->error . "</div>";
             }
         }
     }
@@ -50,7 +59,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["add_user"])) {
     exit();
 }
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -98,6 +106,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["add_user"])) {
                 <div class="col-md-4 bg-white p-4 rounded shadow-lg mt-4 text-center" style="box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); transition: transform 0.3s ease;">
                     <h2 class="mb-3 text-dark">Add New User</h2>
                     
+                    <?php echo $message; ?>
+
                     <form action="users.php" method="POST">
                         <!-- name -->
                         <div class="mb-3" style="display: flex; gap: 10px;">
@@ -174,8 +184,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["add_user"])) {
                                                     <td>{$row['email']}</td>
                                                     <td>" . ($row['is_admin'] == 1 ? 'Admin' : 'User') . "</td>
                                                     <td>
-                                                        <a href='../func/edit-user.php?user_id={$row['user_id']}' class='btn btn-sm btn-outline-success'>✏️ Edit</a>
-                                                        <a href='../func/delete-user.php?user_id={$row['user_id']}' class='btn btn-sm btn-outline-danger' 
+                                                        <a href='../func/admin/edit-user.php?user_id={$row['user_id']}' class='btn btn-sm btn-outline-success'>✏️ Edit</a>
+                                                        <a href='../func/admin/delete-user.php?user_id={$row['user_id']}' class='btn btn-sm btn-outline-danger' 
                                                             onclick='return confirm('Are you sure you want to delete this user?');'>🗑 Delete
                                                         </a>
                                                     </td>

@@ -1,6 +1,12 @@
 <?php
-
+session_start();
 include("../func/connections.php");
+
+// Redirect non-admins
+if (!isset($_SESSION["is_admin"]) || $_SESSION["is_admin"] != 1) {
+    header("Location: ../login.php");
+    exit();
+}
 
 // Fetch Total Users (Exclude Admins)
 $user_query = "SELECT COUNT(*) AS total_users FROM user WHERE is_admin = 0;";
@@ -12,10 +18,10 @@ $course_query = "SELECT COUNT(*) AS total_courses FROM courses";
 $course_result = $conn->query($course_query);
 $total_courses = $course_result->fetch_assoc()['total_courses'];
 
-// // Fetch Total Sum of Product Prices
-// $purchase_query = "SELECT COALESCE(SUM(course_price), 0) AS total_price FROM purchases;";
-// $purchase_result = $conn->query($purchase_query);
-// $total_price = $purchase_result->fetch_assoc()['total_price'];
+// Fetch Total Sum of Product Prices
+$purchase_query = "SELECT COALESCE(SUM(total_amount), 0) AS total_price FROM orders;";
+$purchase_result = $conn->query($purchase_query);
+$total_price = $purchase_result->fetch_assoc()['total_price'];
 
 // ?>
 
@@ -77,7 +83,7 @@ $total_courses = $course_result->fetch_assoc()['total_courses'];
                     </div>
 
                     <div class="col-sm-3 mx-2 bg-danger p-4 rounded shadow mt-4 text-white text-center">
-                        <span class="fs-2 fw-bold">$<?php echo $total_price; ?></span>
+                        <span class="fs-2 fw-bold">$<?php echo number_format($total_price, 2); ?></span>
                         <h4 class="fw-bold">Total Revenue</h4>
                     </div>
                 </div>
@@ -97,6 +103,7 @@ $total_courses = $course_result->fetch_assoc()['total_courses'];
                                             <th scope="col">First Name</th>
                                             <th scope="col">Last Name</th>
                                             <th scope="col">Email</th>
+                                            <th scope="col">Account Type</th>
                                         </tr>
                                     </thead>
 
@@ -108,14 +115,13 @@ $total_courses = $course_result->fetch_assoc()['total_courses'];
 
                                             if ($result->num_rows > 0) {
                                                 while ($row = $result->fetch_assoc()) {  
-                                            ?>
-                                                    <tr>
-                                                        <td class="fw-bold"><?php echo $row['user_id']; ?></td>
-                                                        <td><?php echo $row['first_name']; ?></td>
-                                                        <td><?php echo $row['last_name']; ?></td>
-                                                        <td><?php echo $row['email']; ?></td>                                    
-                                                    </tr>
-                                            <?php
+                                                    echo "<tr>
+                                                        <td class='fw-bold'>{$row['user_id']}</td>
+                                                        <td>{$row['first_name']}</td>
+                                                        <td>{$row['last_name']}</td>
+                                                        <td>{$row['email']}</td>
+                                                        <td>" . ($row['is_admin'] == 1 ? 'Admin' : 'User') . "</td>                           
+                                                    </tr>";
                                                 }
                                             } else {
                                                 echo "<tr><td colspan='5' class='text-center text-muted'>No users found.</td></tr>";

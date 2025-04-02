@@ -1,5 +1,5 @@
 <?php
-include("connections.php");
+include("../connections.php");
 
 $course_id = isset($_GET["course_id"]) ? intval($_GET["course_id"]) : 0;
 $message = "";
@@ -70,7 +70,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["update_course"])) {
         <div class="row">
             <aside class="col-md-2 d-flex flex-column justify-content-between align-items-center bg-dark text-light text-center py-4 vh-100 position-fixed">
                 <div class="w-100 d-flex flex-column align-items-center gap-3">
-                    <img src="../img/logo.png" alt="logo" class="img-fluid" style="max-width: 80px;">
+                    <img src="../../img/logo.png" alt="logo" class="img-fluid" style="max-width: 80px;">
                     <div class="d-flex flex-column gap-3 w-100">
                         <a href="../admin/dashboard.php" class="text-light text-decoration-none">Dashboard</a>
                         <a href="../admin/users.php" class="text-light text-decoration-none">Users</a>
@@ -101,7 +101,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["update_course"])) {
                                 <div class="mb-3">
                                     <input type="file" name="image" class="form-control">
                                     <?php if (!empty($course['image'])): ?>
-                                        <img src="../img/courses/<?= htmlspecialchars($course['image']); ?>" alt="Course Image" class="img-fluid mt-2" style="max-height: 200px; object-fit: cover;">
+                                        <img src="../../img/courses/<?= htmlspecialchars($course['image']); ?>" alt="Course Image" class="img-fluid mt-2" style="max-height: 200px; object-fit: cover;">
                                     <?php endif; ?>
                                 </div>
                                 <div class="mb-3">
@@ -109,7 +109,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["update_course"])) {
                                 </div>
                                 <button type="submit" name="update_course" class="btn btn-dark w-100 fw-bold">➕ Update Course</button>
                             </form>
-                            <p class="mt-5"><a href="../admin/courses.php">Back to Courses</a></p>
+                            <p class="mt-5"><a href="../../admin/courses.php">Back to Courses</a></p>
                         </div>
                     </div>
                 </div>
