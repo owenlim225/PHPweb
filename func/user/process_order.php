@@ -20,10 +20,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["pay_now"])) {
     $email = trim($_POST["email"]);
     $mobile = trim($_POST["mobile"]);
     $country = trim($_POST["country"]);
-    
+    $paymentMethod = $_POST['payment'] ?? '';
+
     // Payment validation
     $allowedMethods = ['gcash', 'maya', 'grabpay'];
-    $paymentMethod = $_POST['payment'] ?? '';
     
     // Validate required fields (fixed variable name)
     if (empty($full_name) || empty($email) || empty($mobile) || empty($country) || empty($paymentMethod)) {
@@ -64,18 +64,38 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["pay_now"])) {
 
     try {
         // Insert into orders table
-        $order_sql = "INSERT INTO orders (user_id, full_name, email, mobile, country, payment_method, total_amount, order_status) 
-                      VALUES (?, ?, ?, ?, ?, ?, ?, 'completed')";
-    
+        $order_sql = "INSERT INTO orders (user_id, full_name, email, mobile, country, payment_method, total_amount, order_status) VALUES (?, ?, ?, ?, ?, ?, ?, 'completed')";
         $order_stmt = $conn->prepare($order_sql);
         $order_stmt->bind_param("isssssd", $user_id, $full_name, $email, $mobile, $country, $paymentMethod, $total_price);
         $order_stmt->execute();
-    
-        // Mark all cart items as purchased
-        $update_cart_sql = "UPDATE cart SET is_purchased = 1 WHERE user_id = ? AND is_purchased = 0";
-        $update_cart_stmt = $conn->prepare($update_cart_sql);
-        $update_cart_stmt->bind_param("i", $user_id);
-        $update_cart_stmt->execute();
+        $order_id = $order_stmt->insert_id;
+        
+        // Fetch all courses in the cart
+        $cart_query = "SELECT course_id FROM cart WHERE user_id = ? AND is_purchased = 0";
+        $cart_stmt = $conn->prepare($cart_query);
+        $cart_stmt->bind_param("i", $user_id);
+        $cart_stmt->execute();
+        $cart_result = $cart_stmt->get_result();
+        
+        // Insert purchased courses into new table
+        $purchased_sql = "INSERT INTO purchased_courses (user_id, course_id, order_id) VALUES (?, ?, ?)";
+        $purchased_stmt = $conn->prepare($purchased_sql);
+        while ($row = $cart_result->fetch_assoc()) {
+            $purchased_stmt->bind_param("iii", $user_id, $row['course_id'], $order_id);
+            $purchased_stmt->execute();
+        }
+        
+        // Update the cart to mark items as purchased
+        $update_sql = "UPDATE cart SET is_purchased = 1 WHERE user_id = ? AND is_purchased = 0";
+        $stmt = $conn->prepare($update_sql);
+        $stmt->bind_param("i", $user_id);
+        $stmt->execute();
+
+        // Delete items from the cart after updating
+        $delete_sql = "DELETE FROM cart WHERE user_id = ? AND is_purchased = 1";
+        $stmt = $conn->prepare($delete_sql);
+        $stmt->bind_param("i", $user_id);
+        $stmt->execute();
     
         // Commit transaction
         $conn->commit();

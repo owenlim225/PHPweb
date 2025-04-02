@@ -246,18 +246,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["update_user"])) {
 
             <div class="col-md-1"></div> <!-- Add space between columns -->
 
+            <!-- for right column fetch data -->
+            <?php
+                // Fetch purchased courses for the logged-in user
+                $sql = "SELECT c.* FROM purchased_courses pc 
+                        JOIN courses c ON pc.course_id = c.course_id 
+                        WHERE pc.user_id = ?";
+                
+                $stmt = $conn->prepare($sql);
+                $stmt->bind_param("i", $user_id);
+                $stmt->execute();
+                $result = $stmt->get_result();
+            ?>
+
 
             <!-- Right column: User courses -->
             <div class="col-md-8 bg-white p-4 rounded shadow-lg mt-4 text-center">
-                <h2 class="mb-3 text-dark">Edit Profile</h2>
+                <h2 class="mb-3 text-dark">My courses</h2>
                 <div class="row justify-content-center">
                     <div class="col-lg-10">
                         <div class="row">
                             <?php
-                                // Fetch courses
-                                $sql = "SELECT * FROM courses";
-                                $result = $conn->query($sql);
-
                                 if ($result->num_rows > 0) {
                                     while ($row = $result->fetch_assoc()) {  
                                         echo "<div class='service-item col-md-4 mb-4'>
