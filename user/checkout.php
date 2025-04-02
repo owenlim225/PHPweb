@@ -38,6 +38,25 @@ $stmt->execute();
 $result = $stmt->get_result();
 $total_price = $result->fetch_assoc()['total_price'];
 
+
+
+// Load carousel slides data
+$preload_count = 3; // Number of slides to preload
+$result->data_seek(0);
+$count = 0;
+
+while ($row = $result->fetch_assoc() && $count < $preload_count) {
+    // Generate slide HTML
+    // ...
+    $count++;
+}
+
+// Store remaining course IDs in JS variable
+echo '<script>var remainingCourseIds = [';
+while ($row = $result->fetch_assoc()) {
+    echo $row['course_id'] . ',';
+}
+echo '];</script>';
 ?>
 
 
@@ -121,38 +140,96 @@ $total_price = $result->fetch_assoc()['total_price'];
 <main class="main pt-5 mt-3">
     <div class="container py-4">
         <div class="container d-lg-flex align-items-start justify-content-between py-4">
-            <!-- Box 1 -->
+            <!-- Box 1 (courses)-->
             <div class="col-lg-7 bg-light p-4 rounded shadow">
-                <div class="mb-3">
+                <!-- main carousel -->
+                <div class="mb-3">    
+                    
+                    <?php
+                        // Fetch cart items count - we only need the count initially
+                        $user_id = $_SESSION['user_id'];
+                        $count_sql = "SELECT COUNT(*) as total_courses 
+                                    FROM cart c
+                                    JOIN courses cs ON c.course_id = cs.course_id
+                                    WHERE c.user_id = $user_id";
+                        $count_result = $conn->query($count_sql);
+                        $count_row = $count_result->fetch_assoc();
+                        $total_courses = $count_row['total_courses'];
+                    ?>
+                    
                     <div class="d-flex justify-content-between">
-                        <p class="fw-bold">Minimal Icons by Oliur</p>
+                        <p class="fw-bold">Your Course Selection</p>
                     </div>
+
                     <!-- Carousel -->
                     <div id="my" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="2000">
                         <div class="carousel-indicators">
-                            <button type="button" data-bs-target="#my" data-bs-slide-to="0" class="active" aria-current="true"></button>
-                            <button type="button" data-bs-target="#my" data-bs-slide-to="1"></button>
-                            <button type="button" data-bs-target="#my" data-bs-slide-to="2"></button>
+                            <?php
+                                // Generate indicators based on course count
+                                for ($i = 0; $i < $total_courses; $i++) {
+                                    echo '<button type="button" data-bs-target="#my" data-bs-slide-to="' . $i . '"' . 
+                                        ($i == 0 ? ' class="active" aria-current="true"' : '') . '></button>';
+                                }
+                                
+                                // If no courses, show at least one indicator
+                                if ($total_courses == 0) {
+                                    echo '<button type="button" data-bs-target="#my" data-bs-slide-to="0" class="active" aria-current="true"></button>';
+                                }
+                            ?>
                         </div>
                         <div class="carousel-inner rounded">
-                            <div class="carousel-item active">
-                                <img src="https://images.pexels.com/photos/356056/pexels-photo-356056.jpeg?auto=compress&cs=tinysrgb&dpr=3&h=750&w=1260" class="d-block w-100">
-                            </div>
-                            <div class="carousel-item">
-                                <img src="https://images.pexels.com/photos/270694/pexels-photo-270694.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" class="d-block w-100">
-                            </div>
-                            <div class="carousel-item">
-                                <img src="https://images.pexels.com/photos/7974/pexels-photo.jpg?auto=compress&cs=tinysrgb&dpr=2&w=500" class="d-block w-100">
-                            </div>
+                            <?php if ($total_courses > 0): ?>
+                                <?php 
+                                // Get all courses for this user
+                                $sql = "SELECT c.cart_id, c.user_id, c.course_id, 
+                                            cs.course_title, cs.price, cs.image
+                                        FROM cart c
+                                        JOIN courses cs ON c.course_id = cs.course_id
+                                        WHERE c.user_id = $user_id";
+                                        
+                                $result = $conn->query($sql);
+                                $index = 0;
+                                
+                                // Create carousel items for each course
+                                while ($row = $result->fetch_assoc()): 
+                                ?>
+                                    <div class="carousel-item <?php echo ($index == 0) ? 'active' : ''; ?>">
+                                        <?php 
+                                            // Display course image or placeholder
+                                            $image_src = !empty($row['image']) ? "../img/courses/" . $row['image'] : 'https://via.placeholder.com/800x400?text=Course+Image';
+                                        ?>
+                                        <img src="<?php echo htmlspecialchars($image_src, ENT_QUOTES, 'UTF-8'); ?>" class="d-block w-100" alt="<?php echo $row['course_title']; ?>">
+                                        <div class="carousel-caption d-md-block" style="background-color: rgba(0,0,0,0.5); border-radius: 5px; padding: 10px;">
+                                            <h5><?php echo $row['course_title']; ?></h5>
+                                            <p class="mb-0">&#8369;<?php echo number_format($row['price'], 2); ?></p>
+                                        </div>
+                                    </div>
+                                <?php 
+                                    $index++;
+                                endwhile; 
+                                ?>
+                            <?php else: ?>
+                                <!-- No courses case -->
+                                <div class="carousel-item active">
+                                    <div class="d-flex justify-content-center align-items-center bg-light text-center" style="height: 300px;">
+                                        <div>
+                                            <p class="fs-4 text-muted">No courses in your cart</p>
+                                            <a href="courses.php" class="btn btn-primary">Browse Courses</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php endif; ?>
                         </div>
+                        <?php if ($total_courses > 1): ?>
                         <button class="carousel-control-prev" type="button" data-bs-target="#my" data-bs-slide="prev">
                             <span class="carousel-control-prev-icon"></span>
                         </button>
                         <button class="carousel-control-next" type="button" data-bs-target="#my" data-bs-slide="next">
                             <span class="carousel-control-next-icon"></span>
                         </button>
+                        <?php endif; ?>
                     </div>
-                    <p class="mt-3 text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit...</p>
+                    <p class="mt-3 text-muted">Browse through courses in your cart before checkout.</p>
                 </div>
             </div>
 
@@ -271,8 +348,56 @@ $total_price = $result->fetch_assoc()['total_price'];
 </main>
 
 
+
 <?php include 'footer.php'; ?>
 <!-- bootstrap js link -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+<!-- Add AJAX loading script -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Function to load course data via AJAX
+        function loadCourseData(index) {
+            // Find the carousel item with this index
+            const carouselItem = document.querySelector(`.carousel-item[data-index="${index}"]`);
+            
+            // Only load if not already loaded
+            if (!carouselItem.classList.contains('loaded')) {
+                // Create AJAX request
+                const xhr = new XMLHttpRequest();
+                xhr.open('POST', 'get_course_slide.php', true);
+                xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+                
+                // Handle response
+                xhr.onload = function() {
+                    if (this.status === 200) {
+                        carouselItem.innerHTML = xhr.responseText;
+                        carouselItem.classList.add('loaded');
+                    }
+                };
+                
+                // Send request with index and user ID
+                xhr.send(`index=${index}&user_id=<?php echo $user_id; ?>`);
+            }
+        }
+        
+        // Get the carousel element
+        const myCarousel = document.getElementById('my');
+        
+        // Load first slide immediately
+        loadCourseData(0);
+        
+        // Set up event listener for slide change
+        myCarousel.addEventListener('slide.bs.carousel', function(e) {
+            // Get the index of the next slide
+            const nextIndex = e.to;
+            loadCourseData(nextIndex);
+            
+            // Preload the next slide too for smoother experience
+            const nextNextIndex = (nextIndex + 1) % <?php echo max(1, $total_courses); ?>;
+            loadCourseData(nextNextIndex);
+        });
+    });
+</script>
 </body>
 </html>
