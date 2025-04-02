@@ -194,7 +194,7 @@ $total_price = $result->fetch_assoc()['total_price'];
                             while ($row = $result->fetch_assoc()) {  
                                 echo '<div class="d-flex justify-content-between mb-2">
                                     <span>' . $row['course_title'] . '</span>
-                                    <span>&#8369;' . number_format($row['price'], 2) . '</span>
+                                    <span class="fw-bold"> &#8369;' . number_format($row['price'], 2) . '</span>
                                 </div>';
                             }
                             echo '</div>';
