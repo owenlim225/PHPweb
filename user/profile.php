@@ -2,10 +2,8 @@
 session_start();
 include("../func/connections.php");
 
-$user_id = isset($_GET["user_id"]) ? intval($_GET["user_id"]) : 0;
 $message = "";
 $user = null; // Ensure $user is defined
-
 
 // Ensure user is logged in before querying
 if (isset($_SESSION['email'])) {
@@ -17,13 +15,16 @@ if (isset($_SESSION['email'])) {
     
     if ($result->num_rows > 0) {
         $user = $result->fetch_assoc();
+        $_SESSION['user_id'] = $user['user_id']; // Store user_id in session
         $_SESSION['first_name'] = $user['first_name'];
         $_SESSION['last_name'] = $user['last_name'];
         $_SESSION['contact'] = $user['contact'];
-        
     }
 }
 
+// Use the user_id from session or GET parameter
+$user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 
+          (isset($_GET["user_id"]) ? intval($_GET["user_id"]) : 0);
 
 // Handle form submission
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["update_user"])) {
@@ -33,7 +34,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["update_user"])) {
     $new_password = $_POST["password"];
     $confirm_password = $_POST["confirm_password"];
     $is_admin = isset($_POST["is_admin"]) ? intval($_POST["is_admin"]) : 0;
-    $user_id = isset($_POST["user_id"]) ? $_POST["user_id"] : $user['user_id'];
+    $user_id = isset($_POST["user_id"]) ? $_POST["user_id"] : $user_id;
 
     // Validate required fields
     if (empty($first_name) || empty($last_name) || empty($contact)) {
@@ -249,15 +250,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["update_user"])) {
             <!-- for right column fetch data -->
             <?php
                 // Fetch purchased courses for the logged-in user
-                $sql = "SELECT c.* FROM purchased_courses pc 
-                        JOIN courses c ON pc.course_id = c.course_id 
-                        WHERE pc.user_id = ?";
-                
-                $stmt = $conn->prepare($sql);
-                $stmt->bind_param("i", $user_id);
-                $stmt->execute();
-                $result = $stmt->get_result();
-            ?>
+                // This should go in the same place as your original code
+                if ($user_id > 0) {
+                    $sql = "SELECT c.* FROM purchased_courses pc 
+                            JOIN courses c ON pc.course_id = c.course_id 
+                            WHERE pc.user_id = ?";
+                    
+                    $stmt = $conn->prepare($sql);
+                    $stmt->bind_param("i", $user_id);
+                    $stmt->execute();
+                    $result = $stmt->get_result();
+                } else {
+                    // No user is logged in or user_id is not set
+                    $result = false;
+                }
+                ?>
 
 
             <!-- Right column: User courses -->
@@ -283,7 +290,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["update_user"])) {
                                                     <div class='course-card-body'>
                                                         <h5 class='course-title'>{$row['course_title']}</h5>
                                                         <p class='course-instructor'>{$row['instructor']}</p>
-                                                        <a href='../func/admin/edit-course.php?course_id={$row['course_id']}' class='edit-button'>
+                                                        <a href='under-construction.php' class='edit-button'>
                                                             <span class='edit-icon'>✏️</span> Start Course
                                                         </a>
                                                     </div>
