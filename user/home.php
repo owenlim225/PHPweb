@@ -16,17 +16,18 @@ if (isset($_SESSION['email'])) {
     }
 }
 
-
-// Add this near the top of pages where you show the cart icon
-if (isset($_SESSION['user_id'])) {
-    // Get cart count from database
-    $user_id = $_SESSION['user_id'];
-    $count_query = $conn->prepare("SELECT COUNT(*) as cart_count FROM cart WHERE user_id = ?");
-    $count_query->bind_param("i", $user_id);
-    $count_query->execute();
-    $count_result = $count_query->get_result();
-    $count_row = $count_result->fetch_assoc();
-    $_SESSION['cart_count'] = $count_row['cart_count'];
+// Add this to start of pages where you need the cart count
+function updateCartBadge($conn) {
+    if (isset($_SESSION['user_id'])) {
+        $user_id = $_SESSION['user_id'];
+        $query = "SELECT COUNT(*) as cart_count FROM cart WHERE user_id = ? AND is_purchased = 0";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param("i", $user_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row = $result->fetch_assoc();
+        $_SESSION['cart_count'] = $row['cart_count'];
+    }
 }
 
 ?>
@@ -195,33 +196,33 @@ if (isset($_SESSION['user_id'])) {
             if ($result->num_rows > 0) {
               while ($row = $result->fetch_assoc()) {  
                 echo "<div class='col-lg-4 col-md-6' data-aos='fade-up' data-aos-delay='100'>
-                        <div class='service-item position-relative'>
+                        <div class='service-item position-relative d-flex flex-column h-100'>
                             <div class='mb-3'>
                                 <img src='../img/courses/{$row['image']}' alt='{$row['course_title']}' class='img-fluid rounded' style='width: 100%; height: 200px; object-fit: cover;'>
                             </div>
 
-                            <div class='card-body text-center'>
+                            <div class='card-body text-center d-flex flex-column flex-grow-1'>
                                 <h5 class='card-title fw-bold'>{$row['course_title']}</h5>
                                 <p class='card-text text-muted fw-bold m-2' style='font-size: 12px;'>{$row['instructor']}</p>
-                                <p class='card-text text-muted m-2' style='font-size: 16px;'>
-                                    {$row['description']}
-                                </p>
-                                <p class='card-text fw-bold' style='font-size: 18px;'>₱" . number_format($row['price'], 2) . "</p>
+                                
+                                <div class='description-container' style='height: 80px; overflow: hidden; margin-bottom: 10px;'>
+                                    <p class='card-text text-muted m-2' style='font-size: 16px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;'>
+                                        {$row['description']}
+                                    </p>
+                                </div>
+                                
+                                <p class='card-text fw-bold mt-auto' style='font-size: 18px;'>₱" . number_format($row['price'], 2) . "</p>
+                            </div>
 
-                               <div class='button-container p-3 mt-auto border-top'>
-                                    <div class='d-flex justify-content-center gap-2'>
-                                        <a href='../func/user/buy-course.php?course_id={$row['course_id']}' class='btn btn-sm btn-success py-2 px-5'>Buy</a>
-
-                                        <form action='../func/user/add-to-cart.php' method='POST'>
-                                            <input type='hidden' name='course_id' value='{$row['course_id']}'>
-                                            <button type='submit' name='add_to_cart' class='btn btn-sm btn-outline-danger py-2 px-3 position-relative'>
-                                                <i class='fa-solid fa-cart-shopping'></i>
-                                            </button>
-                                        </form>
-
-
-                                        
-                                    </div>
+                            <div class='button-container p-3 mt-auto border-top'>
+                                <div class='d-flex justify-content-center gap-2'>
+                                    <a href='../func/user/buy-course.php?course_id={$row['course_id']}' class='btn btn-sm btn-success py-2 px-5'>Buy</a>
+                                    <form action='../func/user/add-to-cart.php' method='POST'>
+                                        <input type='hidden' name='course_id' value='{$row['course_id']}'>
+                                        <button type='submit' name='add_to_cart' class='btn btn-sm btn-outline-danger py-2 px-3'>
+                                            <i class='fa-solid fa-cart-shopping'></i>
+                                        </button>
+                                    </form>
                                 </div>
                             </div>
                         </div>
@@ -240,9 +241,101 @@ if (isset($_SESSION['user_id'])) {
 
 <?php include 'footer.php'; ?>
 
+<!-- toast container -->
+<div id="toastContainer" style="position: fixed; bottom: 20px; right: 20px; z-index: 9999;"></div>
+
 <!-- bootstrap js link -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
+<script>
+    document.querySelectorAll('.add-to-cart').forEach(button => {
+    button.addEventListener('click', function() {
+        let courseId = this.getAttribute('data-course-id');
 
+        let xhr = new XMLHttpRequest();
+        xhr.open("POST", "add-to-cart.php", true);
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                document.getElementById("cart-message").innerHTML = xhr.responseText;
+            }
+        };
+
+        xhr.send("course_id=" + courseId);
+    });
+});
+</script>
+
+<!-- JavaScript for displaying notifications -->
+<script>
+function showToast(type, message) {
+    const container = document.getElementById('toastContainer');
+    
+    // Create toast element
+    const toast = document.createElement('div');
+    toast.className = 'toast show';
+    toast.style.minWidth = '250px';
+    
+    // Set color based on type
+    let bgColor, textColor, icon;
+    switch(type) {
+        case 'success':
+            bgColor = '#4CAF50';
+            textColor = 'white';
+            icon = '<i class="fa-solid fa-check-circle"></i>';
+            break;
+        case 'warning':
+            bgColor = '#FF9800';
+            textColor = 'white';
+            icon = '<i class="fa-solid fa-exclamation-triangle"></i>';
+            break;
+        case 'error':
+            bgColor = '#F44336';
+            textColor = 'white';
+            icon = '<i class="fa-solid fa-times-circle"></i>';
+            break;
+        default:
+            bgColor = '#2196F3';
+            textColor = 'white';
+            icon = '<i class="fa-solid fa-info-circle"></i>';
+    }
+    
+    toast.style.backgroundColor = bgColor;
+    toast.style.color = textColor;
+    toast.style.borderRadius = '4px';
+    toast.style.padding = '15px';
+    toast.style.marginBottom = '10px';
+    toast.style.boxShadow = '0 2px 5px rgba(0,0,0,0.2)';
+    toast.style.display = 'flex';
+    toast.style.alignItems = 'center';
+    toast.style.animation = 'fadeIn 0.5s, fadeOut 0.5s 2.5s';
+    
+    // Set content
+    toast.innerHTML = `
+        <div style="margin-right: 10px;">${icon}</div>
+        <div style="flex-grow: 1;">${message}</div>
+        <div style="cursor: pointer; margin-left: 10px;" onclick="this.parentElement.remove()">
+            <i class="fa-solid fa-times"></i>
+        </div>
+    `;
+    
+    // Add to container
+    container.appendChild(toast);
+    
+    // Remove after 3 seconds
+    setTimeout(() => {
+        toast.remove();
+    }, 5000);
+}
+
+// Check for notifications in PHP session
+<?php if(isset($_SESSION['notification'])): ?>
+    document.addEventListener('DOMContentLoaded', function() {
+        showToast('<?php echo $_SESSION['notification']['type']; ?>', '<?php echo $_SESSION['notification']['message']; ?>');
+    });
+    <?php unset($_SESSION['notification']); ?>
+<?php endif; ?>
+</script>
 </body>
 </html>

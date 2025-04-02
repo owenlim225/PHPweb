@@ -3,7 +3,6 @@ session_start();
 include("func/connections.php");
 
 
-
 $message = "";
 
 // Handle login request
@@ -11,15 +10,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = $_POST["email"];
     $password = $_POST["password"];
 
-    // Check if user exists and get admin status
-    $stmt = $conn->prepare("SELECT email, password, is_admin FROM user WHERE email = ?");
+    // Check if user exists and get user information
+    $stmt = $conn->prepare("SELECT user_id, email, password, is_admin FROM user WHERE email = ?");
     $stmt->bind_param("s", $email);
     $stmt->execute();
     $stmt->store_result();
     
     // If user exists
     if ($stmt->num_rows > 0) {
-        $stmt->bind_result($email, $hashed_password, $is_admin);
+        $stmt->bind_result($user_id, $email, $hashed_password, $is_admin);
         $stmt->fetch();
 
         // Verify password
@@ -27,6 +26,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Set session variables
             $_SESSION["email"] = $email;
             $_SESSION["is_admin"] = $is_admin;
+            $_SESSION["user_id"] = $user_id; // Correctly set user_id from the query result
 
             // Redirect based on admin status
             if ($is_admin == 1) {
@@ -39,7 +39,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $message = "<div class='error' style='background-color: red; color: white; padding: 10px; border-radius: 5px'>⚠️ Invalid email or password!.</div>";
         }
     } else {
-        
         $message = "<div class='error'>⚠️ Incorrect username or password.</div>";
     }
 

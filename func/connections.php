@@ -11,5 +11,5 @@ if (mysqli_connect_error()) {
     die("Connection failed: " . mysqli_connect_error());
 }
 
-echo "<script>alert('DATABASE CONNECTED');</script>";
+// echo "<script>alert('DATABASE CONNECTED');</script>";
 ?>

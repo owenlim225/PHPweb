@@ -1,3 +1,13 @@
+@keyframes fadeIn {
+  from {opacity: 0; transform: translateX(50px);}
+  to {opacity: 1; transform: translateX(0);}
+}
+
+@keyframes fadeOut {
+  from {opacity: 1; transform: translateX(0);}
+  to {opacity: 0; transform: translateX(50px);}
+}
+
 .text-huge-title {
     --text-huge : 10.8rem;
     font-size   : var(--text-huge);
