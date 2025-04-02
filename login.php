@@ -5,6 +5,11 @@ include("func/connections.php");
 
 $message = "";
 
+// received message when first registered
+if (isset($_SESSION['message'])) {
+    $message = $_SESSION['message'];
+    unset($_SESSION['message']); // Clear the message so it doesn't show again on refresh
+}
 // Handle login request
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = $_POST["email"];
