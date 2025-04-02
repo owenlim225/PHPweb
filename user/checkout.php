@@ -18,6 +18,7 @@ if (isset($_SESSION['email'])) {
         $user = $result->fetch_assoc();
         $_SESSION['first_name'] = $user['first_name'];
         $_SESSION['last_name'] = $user['last_name'];
+        $_SESSION['email'] = $user['email'];
         $_SESSION['contact'] = $user['contact'];
         $_SESSION['user_id'] = $user['user_id']; // Make sure user_id is stored in session
     }
@@ -276,8 +277,7 @@ echo '];</script>';
                     <!-- second row — Customer Details & Payment Due -->
                     <div class="col-12 bg-white p-4 rounded shadow mt-4">
                         <h3 class="mb-3 fw-bold mb-5">Customer Details</h3>
-                        <form method="POST" action="process_order.php" class="d-flex flex-column gap-3">
-                            
+                        <form method="POST" action="../func/user/process_order.php" class="d-flex flex-column gap-3">
                             <!-- Customer Details -->
                             <div>
                                 <div class="mb-3">
@@ -286,7 +286,10 @@ echo '];</script>';
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Email Address *</label>
-                                    <input type="email" class="form-control" name="email" required>
+                                    <input type="email" class="form-control" name="email" value="<?php echo isset($_SESSION['email']) ? htmlspecialchars($_SESSION['email']) : ''; ?>" required disabled>
+
+                                    <!-- Hidden input to send the email in POST request -->
+                                    <input type="hidden" name="email" value="<?php echo isset($_SESSION['email']) ? htmlspecialchars($_SESSION['email']) : ''; ?>">
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Mobile Number *</label>
@@ -315,7 +318,7 @@ echo '];</script>';
                                         <div class="d-flex align-items-center gap-2 flex-grow-1 m-2">
                                             <img alt="Gcash" src="https://cdn.helixpay.ph/images/payment_types/gcash_logo.png" class="payment-type-logo img-fluid" style="max-height: 32px;">
                                         </div>
-                                        <input class="form-check-input" value="gcash" name="payment" type="radio">
+                                        <input class="form-check-input" value="gcash" name="payment" type="radio" required>
                                     </label> 
 
                                     <!-- Maya -->
@@ -323,7 +326,7 @@ echo '];</script>';
                                         <div class="d-flex align-items-center gap-2 flex-grow-1 m-2">
                                             <img src="https://cdn.helixpay.ph/images/payment_types/maya_logo.png" alt="PayMaya" class="payment-type-logo img-fluid" style="max-height: 32px;">
                                         </div>
-                                        <input class="form-check-input" value="maya" name="payment" type="radio">
+                                        <input class="form-check-input" value="maya" name="payment" type="radio" required>
                                     </label> 
 
                                     <!-- GrabPay -->
@@ -331,14 +334,13 @@ echo '];</script>';
                                         <div class="d-flex align-items-center gap-2 flex-grow-1 m-2">
                                             <img alt="GrabPay" src="https://cdn.helixpay.ph/images/payment_types/grabpay_logo.png" class="payment-type-logo img-fluid" style="max-height: 32px;">
                                         </div>
-                                        <input class="form-check-input" value="grabpay" name="payment" type="radio">
+                                        <input class="form-check-input" value="grabpay" name="payment" type="radio" required>
                                     </label> 
                                 </div>
                             </div>
 
                             <!-- Submit Button -->
-                            <button type="submit" class="btn btn-primary w-100">Pay now</button>
-                            
+                            <button type="submit" name="pay_now" class="btn btn-primary w-100">Pay now</button>
                         </form>
                     </div>
                 </div>

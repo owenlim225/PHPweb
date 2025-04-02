@@ -20,11 +20,12 @@ if (!isset($_SESSION['user_id']) || empty($_SESSION['user_id'])) {
     exit();
 }
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") { // ✅ Only allow POST requests
-    $user_id = $_SESSION['user_id']; // ✅ Get user_id from session
-    $course_id = $_POST['course_id']; // ✅ Get course_id from POST
+// Check if request method is POST
+if ($_SERVER["REQUEST_METHOD"] == "POST") { // Only allow POST requests
+    $user_id = $_SESSION['user_id']; // Get user_id from session
+    $course_id = $_POST['course_id']; // Get course_id from POST
 
-    // ✅ Prevent duplicate cart entries
+    // Prevent duplicate cart entries
     $check_query = "SELECT * FROM cart WHERE user_id = ? AND course_id = ? AND is_purchased = 0";
     $stmt = $conn->prepare($check_query);
     $stmt->bind_param("ii", $user_id, $course_id);
@@ -32,7 +33,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") { // ✅ Only allow POST requests
     $result = $stmt->get_result();
 
     if ($result->num_rows == 0) {
-        // ✅ Insert new cart item
+        // Insert new cart item
         $query = "INSERT INTO cart (user_id, course_id, is_purchased, added_at) VALUES (?, ?, 0, NOW())";
         $stmt = $conn->prepare($query);
         $stmt->bind_param("ii", $user_id, $course_id);
