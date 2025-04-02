@@ -123,15 +123,9 @@ $total_price = $result->fetch_assoc()['total_price'];
         <div class="container d-lg-flex align-items-start justify-content-between py-4">
             <!-- Box 1 -->
             <div class="col-lg-7 bg-light p-4 rounded shadow">
-                <div class="d-flex align-items-center mb-3">
-                    <img src="https://images.pexels.com/photos/4925916/pexels-photo-4925916.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500" 
-                        class="rounded-circle me-2" width="50" alt="">
-                    <p class="fw-bold mb-0">Oliur</p>
-                </div>
                 <div class="mb-3">
                     <div class="d-flex justify-content-between">
                         <p class="fw-bold">Minimal Icons by Oliur</p>
-                        <p class="text-muted"><i class="fas fa-dollar-sign"></i> 19.00</p>
                     </div>
                     <!-- Carousel -->
                     <div id="my" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="2000">
@@ -159,14 +153,6 @@ $total_price = $result->fetch_assoc()['total_price'];
                         </button>
                     </div>
                     <p class="mt-3 text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit...</p>
-                    <p class="text-muted">Free updates forever</p>
-                    <p class="text-muted">Three different colored sets:</p>
-                    <ul class="list-unstyled">
-                        <li><i class="fas fa-arrow-right me-2"></i>Black</li>
-                        <li><i class="fas fa-arrow-right me-2"></i>White</li>
-                        <li><i class="fas fa-arrow-right me-2"></i>Pastel</li>
-                    </ul>
-                    <p class="fw-bold">Here is a quick guide on how to apply them</p>
                 </div>
             </div>
 
