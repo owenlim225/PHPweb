@@ -92,6 +92,81 @@ if (isset($_SESSION['email'])) {
     </nav>
 </div>
 
+
+<div class="container py-4">
+  <h1 class="text-center fw-bold my-5 text-primary">Course List</h1>
+  <div class="container">
+      <div class="row justify-content-center">
+          <div class="col-lg-10">
+            <div class="row justify-content-center">
+              <div class="col-lg-10">
+                  <div class="table-responsive">
+                      <table class="table table-striped table-hover table-bordered shadow rounded">
+                          <thead class="table-dark text-center">
+                              <tr>
+                                  <th scope="col">ID</th>
+                                  <th scope="col">Image</th>
+                                  <th scope="col">Course Title</th>
+                                  <th scope="col">Price</th>
+                                  <th scope="col">Actions</th>
+                              </tr>
+                          </thead>
+
+                          <tbody class="text-center">
+                          <?php
+                            // Fetch cart items with course details using JOIN
+                            $user_id = $_SESSION['user_id']; // Make sure you have session_start() at the top of your file
+                            
+                            $sql = "SELECT c.cart_id, c.user_id, c.course_id, 
+                                          cs.course_title, cs.price, cs.image
+                                    FROM cart c
+                                    JOIN courses cs ON c.course_id = cs.course_id
+                                    WHERE c.user_id = $user_id";
+                                    
+                            $result = $conn->query($sql);
+
+                            if ($result->num_rows > 0) {
+                                while ($row = $result->fetch_assoc()) {  
+                                    echo "<tr>
+                                        <td class='fw-bold'>{$row['course_id']}</td>
+                                        <td><img src='../img/courses/{$row['image']}' alt='{$row['course_title']}' class='card-img-top' style='height: 200px; object-fit: cover;'></td>
+                                        <td>{$row['course_title']}</td>
+                                        <td>₱" . number_format($row['price'], 2) . "</td>
+                                        <td class='text-center'>
+                                            <a href='../func/user/buy-course.php?course_id={$row['course_id']}' class='btn btn-sm btn-outline-success'>✏️ Checkout</a>
+                                            <a href='../func/user/delete-cart-item.php?course_id={$row['course_id']}' class='btn btn-sm btn-outline-danger' 
+                                                onclick=\"return confirm('Are you sure you want to delete this course?');\">🗑 Delete
+                                            </a>
+                                        </td>
+                                    </tr>";
+                                }
+                            } else {
+                                echo "<tr><td colspan='5' class='text-center text-muted'>No courses in your cart.</td></tr>";
+                            }
+                        ?>
+                          </tbody>
+                      </table>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+</div>
+<!-- Course List -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <?php include 'footer.php'; ?>
 
 <!-- bootstrap js link -->
