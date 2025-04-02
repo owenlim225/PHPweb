@@ -17,7 +17,6 @@
                     <li class="nav-item ms-4">
                         <a class="nav-link" href="#courses">Courses</a>
                     </li>
-                    
                 </ul>
                 <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                 <!-- If the user is logged in -->
