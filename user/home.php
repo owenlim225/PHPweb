@@ -2,6 +2,31 @@
 session_start();
 include("../func/connections.php");
 
+// Update cart badge on page load
+if (isset($_SESSION['user_id'])) {
+    updateCartBadge($conn);
+}
+
+function updateCartBadge($conn) {
+    if (isset($_SESSION['user_id'])) {
+        $user_id = $_SESSION['user_id'];
+        $query = "SELECT COUNT(*) as cart_count FROM cart WHERE user_id = ? AND is_purchased = 0";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param("i", $user_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row = $result->fetch_assoc();
+        $_SESSION['cart_count'] = $row['cart_count'];
+        return $row['cart_count'];
+    }
+    return 0;
+}
+
+// Call this function right after session_start() in your code
+if (isset($_SESSION['user_id'])) {
+    $cart_count = updateCartBadge($conn);
+}
+
 // Ensure user is logged in before querying
 if (isset($_SESSION['email'])) {
     $sql = "SELECT first_name FROM user WHERE email = ?";
@@ -16,19 +41,19 @@ if (isset($_SESSION['email'])) {
     }
 }
 
-// Add this to start of pages where you need the cart count
-function updateCartBadge($conn) {
-    if (isset($_SESSION['user_id'])) {
-        $user_id = $_SESSION['user_id'];
-        $query = "SELECT COUNT(*) as cart_count FROM cart WHERE user_id = ? AND is_purchased = 0";
-        $stmt = $conn->prepare($query);
-        $stmt->bind_param("i", $user_id);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        $row = $result->fetch_assoc();
-        $_SESSION['cart_count'] = $row['cart_count'];
-    }
-}
+// // Add this to start of pages where you need the cart count
+// function updateCartBadge($conn) {
+//     if (isset($_SESSION['user_id'])) {
+//         $user_id = $_SESSION['user_id'];
+//         $query = "SELECT COUNT(*) as cart_count FROM cart WHERE user_id = ? AND is_purchased = 0";
+//         $stmt = $conn->prepare($query);
+//         $stmt->bind_param("i", $user_id);
+//         $stmt->execute();
+//         $result = $stmt->get_result();
+//         $row = $result->fetch_assoc();
+//         $_SESSION['cart_count'] = $row['cart_count'];
+//     }
+// }
 
 ?>
 
@@ -266,6 +291,28 @@ function updateCartBadge($conn) {
     });
 });
 </script>
+
+<!-- Dynamically update cart number -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+    updateCartBadge(); // Fetch cart count on page load
+
+    function updateCartBadge() {
+        fetch('../func/user/get-cart-count.php')
+            .then(response => response.json())
+            .then(data => {
+                const cartBadge = document.getElementById('cartBadge');
+                if (cartBadge) {
+                    cartBadge.textContent = data.cart_count;
+                    cartBadge.style.display = data.cart_count > 0 ? 'inline-block' : 'none';
+                }
+            })
+            .catch(error => console.error('Error fetching cart count:', error));
+    }
+});
+
+</script>
+
 
 <!-- JavaScript for displaying notifications -->
 <script>

@@ -58,6 +58,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["pay_now"])) {
         exit();
     }
     
+
+    // Check for duplicate purchases
+    $dup_check_query = "SELECT pc.course_id 
+                        FROM purchased_courses pc
+                        JOIN cart ct ON pc.course_id = ct.course_id
+                        WHERE pc.user_id = ? AND ct.user_id = ? AND ct.is_purchased = 0";
+
+    $dup_stmt = $conn->prepare($dup_check_query);
+    $dup_stmt->bind_param("ii", $user_id, $user_id);
+    $dup_stmt->execute();
+    $dup_result = $dup_stmt->get_result();
+
+    if ($dup_result->num_rows > 0) {
+        $_SESSION['error_message'] = "You have already purchased one or more courses in your cart.";
+        header("Location: ../../src/user/checkout.php");
+        exit();
+    }
+
+    
     // Begin transaction
     $conn->begin_transaction();
     
@@ -101,19 +120,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["pay_now"])) {
         $conn->commit();
     
         $_SESSION['success_message'] = "Order placed successfully!";
-        header("Location: ../../src/user/purchase-complete.php");
+        header("Location: ../../user/purchase-complete.php");
         exit();
     } catch (Exception $e) {
         $conn->rollback();
         $_SESSION['error_message'] = "An error occurred: " . $e->getMessage();
-        header("Location: ../../src/user/checkout.php");
+        header("Location: ../../user/checkout.php");
         exit();
     }
     
     
 } else {
-    header("Location: ../../src/user/checkout.php");
+    header("Location: ../../user/checkout.php");
     exit();
 }
-?>
 
+?>
