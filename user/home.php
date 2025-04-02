@@ -217,46 +217,101 @@ if (isset($_SESSION['email'])) {
             // Fetch courses
             $sql = "SELECT * FROM courses";
             $result = $conn->query($sql);
-            
+
             if ($result->num_rows > 0) {
-              while ($row = $result->fetch_assoc()) {  
-                echo "<div class='col-lg-4 col-md-6' data-aos='fade-up' data-aos-delay='100'>
-                        <div class='service-item position-relative d-flex flex-column h-100'>
-                            <div class='mb-3'>
-                                <img src='../img/courses/{$row['image']}' alt='{$row['course_title']}' class='img-fluid rounded' style='width: 100%; height: 200px; object-fit: cover;'>
-                            </div>
-
-                            <div class='card-body text-center d-flex flex-column flex-grow-1'>
-                                <h5 class='card-title fw-bold'>{$row['course_title']}</h5>
-                                <p class='card-text text-muted fw-bold m-2' style='font-size: 12px;'>{$row['instructor']}</p>
-                                
-                                <div class='description-container' style='height: 80px; overflow: hidden; margin-bottom: 10px;'>
-                                    <p class='card-text text-muted m-2' style='font-size: 16px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;'>
-                                        {$row['description']}
-                                    </p>
+                while ($row = $result->fetch_assoc()) {
+                    $course_id = $row['course_id'];
+                    $already_purchased = false;
+                    
+                    // Check if user is logged in and if they've already purchased this course
+                    if (isset($_SESSION['user_id'])) {
+                        $user_id = $_SESSION['user_id'];
+                        $purchase_check = "SELECT * FROM purchased_courses WHERE user_id = ? AND course_id = ?";
+                        $stmt = $conn->prepare($purchase_check);
+                        $stmt->bind_param("ii", $user_id, $course_id);
+                        $stmt->execute();
+                        $purchase_result = $stmt->get_result();
+                        $already_purchased = ($purchase_result->num_rows > 0);
+                    }
+                    
+                    echo "<div class='col-lg-4 col-md-6' data-aos='fade-up' data-aos-delay='100'>
+                            <div class='service-item position-relative d-flex flex-column h-100'>
+                                <div class='mb-3'>
+                                    <img src='../img/courses/{$row['image']}' alt='{$row['course_title']}' class='img-fluid rounded' style='width: 100%; height: 200px; object-fit: cover;'>
                                 </div>
-                                
-                                <p class='card-text fw-bold mt-auto' style='font-size: 18px;'>₱" . number_format($row['price'], 2) . "</p>
-                            </div>
 
-                            <div class='button-container p-3 mt-auto border-top'>
-                                <div class='d-flex justify-content-center gap-2'>
-                                    <a href='../func/user/buy-course.php?course_id={$row['course_id']}' class='btn btn-sm btn-success py-2 px-5'>Buy</a>
-                                    <form class='add-to-cart-form'>
-                                        <input type='hidden' name='course_id' value='{$row['course_id']}'>
-                                        <button type='submit' name='add_to_cart' class='btn btn-sm btn-outline-danger py-2 px-3'>
-                                            <i class='fa-solid fa-cart-shopping'></i>
-                                        </button>
-                                    </form>
+                                <div class='card-body text-center d-flex flex-column flex-grow-1'>
+                                    <h5 class='card-title fw-bold'>{$row['course_title']}</h5>
+                                    <p class='card-text text-muted fw-bold m-2' style='font-size: 12px;'>{$row['instructor']}</p>
+                                    
+                                    <div class='description-container' style='height: 80px; overflow: hidden; margin-bottom: 10px;'>
+                                        <p class='card-text text-muted m-2' style='font-size: 16px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;'>
+                                            {$row['description']}
+                                        </p>
+                                    </div>
+                                    
+                                    <p class='card-text fw-bold mt-auto m-3 p-2' style='font-size: 18px;'>₱" . number_format($row['price'], 2) . "</p>";
+                                    
+                                    // Show "Purchased" badge if already purchased
+                                    if ($already_purchased) {
+                                        echo "<span class='badge bg-success mb-2'>Already Purchased</span>";
+                                    }
+                                    
+                                echo "</div>
+
+                                <div class='button-container p-3 mt-auto border-top'>
+                                    <div class='d-flex justify-content-center gap-2'>";
+                                    
+                                    if ($already_purchased) {
+                                        // If already purchased, show "View Course" button instead of "Buy"
+                                        echo "<a href='checkout.php' class='btn btn-sm btn-primary py-2 px-5'>View Course</a>";
+                                    } else {
+                                        // If not purchased, show normal buttons
+                                        echo "<button type='button' class='btn btn-sm btn-success py-2 px-5' ";
+                                        echo ($already_purchased) ? "data-bs-toggle='modal' data-bs-target='#alreadyPurchasedModal{$row['course_id']}'" : "onclick=\"window.location.href='checkout.php'\"";
+                                        echo ">Buy</button>";
+                                        
+                                        echo "<form class='add-to-cart-form'>
+                                            <input type='hidden' name='course_id' value='{$row['course_id']}'>
+                                            <button type='submit' name='add_to_cart' class='btn btn-sm btn-outline-danger py-2 px-3' ";
+                                        echo ($already_purchased) ? "disabled" : "";
+                                        echo ">
+                                                <i class='fa-solid fa-cart-shopping'></i>
+                                            </button>
+                                        </form>";
+                                    }
+                                    
+                                    echo "</div>
                                 </div>
-                            </div>
-                        </div>
-                    </div>";
+                            </div>";
+                            
+                            // Modal for already purchased notification
+                            if ($already_purchased) {
+                                echo "<div class='modal fade' id='alreadyPurchasedModal{$row['course_id']}' tabindex='-1' aria-labelledby='alreadyPurchasedModalLabel{$row['course_id']}' aria-hidden='true'>
+                                    <div class='modal-dialog'>
+                                        <div class='modal-content'>
+                                            <div class='modal-header'>
+                                                <h5 class='modal-title' id='alreadyPurchasedModalLabel{$row['course_id']}'>Course Already Purchased</h5>
+                                                <button type='button' class='btn-close' data-bs-dismiss='modal' aria-label='Close'></button>
+                                            </div>
+                                            <div class='modal-body'>
+                                                <p>You have already purchased the course \"{$row['course_title']}\". You can access it in your purchased courses.</p>
+                                            </div>
+                                            <div class='modal-footer'>
+                                                <button type='button' class='btn btn-secondary' data-bs-dismiss='modal'>Close</button>
+                                                <a href='checkout.php' class='btn btn-primary'>View Course</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>";
+                            }
+                            
+                        echo "</div>";
                 }
             } else {
                 echo "<p class='text-center text-muted'>No courses found.</p>";
             }
-        ?>
+            ?>
       </div>
     </div>
   </section>
