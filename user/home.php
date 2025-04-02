@@ -217,7 +217,7 @@ function updateCartBadge($conn) {
                             <div class='button-container p-3 mt-auto border-top'>
                                 <div class='d-flex justify-content-center gap-2'>
                                     <a href='../func/user/buy-course.php?course_id={$row['course_id']}' class='btn btn-sm btn-success py-2 px-5'>Buy</a>
-                                    <form action='../func/user/add-to-cart.php' method='POST'>
+                                    <form class='add-to-cart-form'>
                                         <input type='hidden' name='course_id' value='{$row['course_id']}'>
                                         <button type='submit' name='add_to_cart' class='btn btn-sm btn-outline-danger py-2 px-3'>
                                             <i class='fa-solid fa-cart-shopping'></i>
@@ -269,8 +269,75 @@ function updateCartBadge($conn) {
 
 <!-- JavaScript for displaying notifications -->
 <script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Handle add to cart forms
+    const addToCartForms = document.querySelectorAll('.add-to-cart-form');
+    
+    addToCartForms.forEach(form => {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const courseId = this.querySelector('input[name="course_id"]').value;
+            const submitButton = this.querySelector('button[type="submit"]');
+            
+            // Temporarily disable button and add spinner
+            const originalButtonContent = submitButton.innerHTML;
+            submitButton.disabled = true;
+            submitButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
+            
+            // Create form data
+            const formData = new FormData();
+            formData.append('course_id', courseId);
+            
+            // Make AJAX request
+            fetch('../func/user/add-to-cart.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Show toast notification
+                showToast(data.type, data.message);
+                
+                // Update cart badge if available
+                const cartBadges = document.querySelectorAll('.cart-badge');
+                if (cartBadges.length > 0 && data.cart_count) {
+                    cartBadges.forEach(badge => {
+                        badge.textContent = data.cart_count;
+                        badge.style.display = data.cart_count > 0 ? 'inline-block' : 'none';
+                    });
+                }
+                
+                // Re-enable button and restore original content
+                submitButton.disabled = false;
+                submitButton.innerHTML = originalButtonContent;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showToast('error', 'An error occurred. Please try again.');
+                
+                // Re-enable button and restore original content
+                submitButton.disabled = false;
+                submitButton.innerHTML = originalButtonContent;
+            });
+        });
+    });
+});
+
+// Toast notification function
 function showToast(type, message) {
     const container = document.getElementById('toastContainer');
+    if (!container) {
+        // Create container if it doesn't exist
+        const newContainer = document.createElement('div');
+        newContainer.id = 'toastContainer';
+        newContainer.style.position = 'fixed';
+        newContainer.style.bottom = '20px';
+        newContainer.style.right = '20px';
+        newContainer.style.zIndex = '9999';
+        document.body.appendChild(newContainer);
+    }
+    
+    const toastContainer = document.getElementById('toastContainer');
     
     // Create toast element
     const toast = document.createElement('div');
@@ -321,21 +388,15 @@ function showToast(type, message) {
     `;
     
     // Add to container
-    container.appendChild(toast);
+    toastContainer.appendChild(toast);
     
     // Remove after 3 seconds
     setTimeout(() => {
         toast.remove();
-    }, 5000);
+    }, 3000);
 }
-
-// Check for notifications in PHP session
-<?php if(isset($_SESSION['notification'])): ?>
-    document.addEventListener('DOMContentLoaded', function() {
-        showToast('<?php echo $_SESSION['notification']['type']; ?>', '<?php echo $_SESSION['notification']['message']; ?>');
-    });
-    <?php unset($_SESSION['notification']); ?>
-<?php endif; ?>
 </script>
+
+
 </body>
 </html>
