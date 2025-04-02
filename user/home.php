@@ -396,7 +396,5 @@ function showToast(type, message) {
     }, 3000);
 }
 </script>
-
-
 </body>
 </html>
