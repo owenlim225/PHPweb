@@ -1,6 +1,12 @@
 <?php
 session_start();
 include("func/connections.php");
+
+// Redirect if user is not logged in
+if (!isset($_SESSION["email"])) {
+  header("Location: login.php");
+  exit();
+}
 ?>
 
 

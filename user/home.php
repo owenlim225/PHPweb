@@ -264,18 +264,14 @@ if (isset($_SESSION['email'])) {
                                     
                                     if ($already_purchased) {
                                         // If already purchased, show "View Course" button instead of "Buy"
-                                        echo "<a href='checkout.php' class='btn btn-sm btn-primary py-2 px-5'>View Course</a>";
+                                        echo "<a href='under-construction.php' class='btn btn-sm btn-primary py-2 px-5'>View Course</a>";
                                     } else {
                                         // If not purchased, show normal buttons
-                                        echo "<button type='button' class='btn btn-sm btn-success py-2 px-5' ";
-                                        echo ($already_purchased) ? "data-bs-toggle='modal' data-bs-target='#alreadyPurchasedModal{$row['course_id']}'" : "onclick=\"window.location.href='checkout.php'\"";
-                                        echo ">Buy</button>";
+                                        // echo "<a href='checkout.php?course_id={$row['course_id']}' class='btn btn-sm btn-success py-2 px-5'>Buy</a>";
                                         
                                         echo "<form class='add-to-cart-form'>
                                             <input type='hidden' name='course_id' value='{$row['course_id']}'>
-                                            <button type='submit' name='add_to_cart' class='btn btn-sm btn-outline-danger py-2 px-3' ";
-                                        echo ($already_purchased) ? "disabled" : "";
-                                        echo ">
+                                            <button type='submit' name='add_to_cart' class='btn btn-sm btn-outline-danger py-2 px-3'>
                                                 <i class='fa-solid fa-cart-shopping'></i>
                                             </button>
                                         </form>";
@@ -368,8 +364,7 @@ if (isset($_SESSION['email'])) {
 
 </script>
 
-
-<!-- JavaScript for displaying notifications -->
+<!-- JavaScript for adding add to cart AJAX -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     // Handle add to cart forms
