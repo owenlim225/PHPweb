@@ -201,6 +201,54 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["add_user"])) {
                     </div>
                 </div>
             </div>
+
+
+
+            <!-- Course List -->
+            <h1 class="text-center fw-bold my-5 text-primary">Course List</h1>
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-lg-10">
+                        <div class="row">
+                            <?php
+                                // Fetch courses
+                                $sql = "SELECT * FROM user";
+                                $result = $conn->query($sql);
+
+                                if ($result->num_rows > 0) {
+                                    while ($row = $result->fetch_assoc()) {  
+                                        echo "<div class='col-md-4 mb-4'>
+                                                <div class='card shadow-lg' style='width: 100%; height: 100%; position: relative; background-color: " . ($row['is_admin'] == 1 ? '#007bff' : '#ffffff') . "'>
+                                                    <div class='card-body text-center'>
+                                                        <span class='position-absolute top-0 start-0 m-2 d-flex align-items-center justify-content-center rounded-circle bg-white border' style='width: 40px; height: 40px;'>
+                                                            <span class='fw-bold' style='font-size: 14px;'>{$row['user_id']}</span>
+                                                        </span>
+                                                        <h5 class='card-text fw-bold m-3'>" . ($row['is_admin'] == 1 ? 'Admin' : 'User') . "</h5>
+                                                        <div class='d-flex justify-content-center' style='color: " . ($row['is_admin'] == 1 ? '#ffffff' : '#000000') . ";'>
+                                                            <p class='card-text mb-0'><strong class='me-2'>First Name:</strong> <span class='text-start'>{$row['first_name']}</span></p>
+                                                        </div>
+                                                        <div class='d-flex justify-content-center' style='color: " . ($row['is_admin'] == 1 ? '#ffffff' : '#000000') . ";'>
+                                                            <p class='card-text mb-0'><strong class='me-2'>Last Name:</strong> <span class='text-start'>{$row['last_name']}</span></p>
+                                                        </div>
+                                                        <div class='d-flex justify-content-center m-4'>
+                                                            <a href='../func/admin/edit-user.php?user_id={$row['user_id']}' class='btn btn-sm btn-success me-3'>✏️ Edit</a>
+                                                            <a href='../func/admin/delete-user.php?user_id={$row['user_id']}' class='btn btn-sm btn-danger' 
+                                                                onclick=\"return confirm('Are you sure you want to delete this user?');\">🗑 Delete
+                                                            </a>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            </div>";
+                                    }
+                                } else {
+                                    echo "<p class='text-center text-muted'>No courses found.</p>";
+                                }
+                            ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </main>

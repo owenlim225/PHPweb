@@ -68,17 +68,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["update_course"])) {
 <main class="p-0">
     <div class="container-fluid">
         <div class="row">
-            <aside class="col-md-2 d-flex flex-column justify-content-between align-items-center bg-dark text-light text-center py-4 vh-100 position-fixed">
+        <aside class="col-md-2 d-flex flex-column justify-content-between align-items-center bg-dark text-light text-center py-4 vh-100 position-fixed">
                 <div class="w-100 d-flex flex-column align-items-center gap-3">
                     <img src="../../img/logo.png" alt="logo" class="img-fluid" style="max-width: 80px;">
                     <div class="d-flex flex-column gap-3 w-100">
-                        <a href="../admin/dashboard.php" class="text-light text-decoration-none">Dashboard</a>
-                        <a href="../admin/users.php" class="text-light text-decoration-none">Users</a>
-                        <a href="../admin/courses.php" class="text-warning fw-bold fs-4 text-decoration-none">Courses</a>
-                        <a href="../admin/order.php" class="text-light text-decoration-none">Orders</a>
+                        <a href="dashboard.php" class="text-light text-decoration-none">Dashboard</a>
+                        <a href="../../admin/users.php" class="text-light text-decoration-none">Users</a>
+                        <a href="../../admin/courses.php" class="text-warning fw-bold fs-4 text-decoration-none">Courses</a>
+                        <a href="../../admin/order.php" class="text-light text-decoration-none">Orders</a>
                     </div>
                 </div>
-                <a class="text-danger text-decoration-none fw-bold" href="../func/logout.php">Logout</a>
+                <a class="text-danger text-decoration-none fw-bold" href="../logout.php">Logout</a>
             </aside>
 
             <div class="col-md-10 offset-md-2">
